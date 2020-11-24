@@ -2,16 +2,34 @@ from nonebot import on_command
 from nonebot.adapters.cqhttp import Bot, Event, unescape
 from argparse import ArgumentParser
 from Pbot.db import Mg
-from utils import doc
+from utils import doc, get_bot
 from .utils import sendrss, getrss, gtfun, handlerss
 import cq
 from .models import *
 import asyncio
+from nonebot.sched import scheduler
 
 rss = on_command("rss")
 NOUPDATE = ["loli", "hpoi"]
 NOBROADCAST = ["gcores"]
 FULLTEXT = ["pprice", "stz"]
+
+
+@scheduler.scheduled_job("interval", minutes=20)
+async def _():
+    bot = get_bot()
+    loop = asyncio.get_event_loop()
+    values = await Mg.query.where(Mg.rss == True).gino.all()
+    values = [int(item.gid) for item in values]
+    for key in doc:
+        if key in NOUPDATE or "pixiv" in key:
+            continue
+        asyncio.run_coroutine_threadsafe(
+            handlerss(
+                bot, key, gtfun(key), key not in NOBROADCAST, key in FULLTEXT, values,
+            ),
+            loop,
+        )
 
 
 @rss.handle()

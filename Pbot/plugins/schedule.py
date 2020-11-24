@@ -1,7 +1,7 @@
 from nonebot.sched import scheduler
 from Pbot.db import Mg
 from nonebot.exception import ActionFailed, ApiNotAvailable, NetworkError, RequestDenied
-import nonebot
+from Pbot.db import Backup
 from utils import get_bot
 
 
@@ -17,3 +17,16 @@ async def _():
             )
         except (ActionFailed, ApiNotAvailable, NetworkError, RequestDenied):
             pass
+
+
+@scheduler.scheduled_job("cron", hour="0,6,12,18", minute="0")
+async def backup():
+    bot = get_bot()
+    ls = await bot.get_group_member_list(group_id=bot.config.group, self_id=3418961367)
+    await bot.send("ok for ls")
+    await Backup.delete.gino.all()
+    await bot.send("ok for del")
+    for item in ls:
+        await Backup.create(qid=item["user_id"], card=item["card"], role=item["role"])
+    await bot.send("ok for backup")
+
