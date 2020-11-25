@@ -78,7 +78,7 @@ def transtime(tm: str, fmt: str = "%a, %d %b %Y %H:%M:%S %Z"):
     return tm
 
 
-async def get_bot():
+def get_bot():
     if nonebot.get_bots():
         return list(nonebot.get_bots().values())[0]
 

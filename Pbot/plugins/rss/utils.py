@@ -124,10 +124,14 @@ async def sendrss(
                 kwargs["mode"] = source[len("pixiv_") :]
             else:
                 kwargs["max_num"] = num[0] if num[0] != -2 else -1
-            if route != None:
-                ress = await getfun(route, (num[0] if num[0] != -2 else -1))
-            else:
-                ress = await getfun(**kwargs)
+            try:
+                if route != None:
+                    ress = await getfun(route, (num[0] if num[0] != -2 else -1))
+                else:
+                    ress = await getfun(**kwargs)
+            except Exception as e:
+                logger.error(str(e), exc_info=True)
+                raise
         if num[0] == -2:
             for i in range(len(ress)):
                 if ress[i][1] == qdt:

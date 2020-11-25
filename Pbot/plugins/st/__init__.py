@@ -2,8 +2,9 @@ from nonebot import on_command
 from nonebot.adapters.cqhttp import Bot, Event, unescape
 from .utils import searchPic, pixivicurl, auth, sauce
 import cq
+from nonebot.rule import regex
 
-st = on_command("st")
+st = on_command("st",rule=regex('^st'))
 
 
 @st.handle()
