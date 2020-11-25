@@ -4,7 +4,7 @@
 
 ## 简介
 
-Working 中。可以先看这里了解相关功能！（毕竟正在迁移到 Nonebot2 ）
+Working 中。可以先看[这里](https://github.com/Pzzzzz5142/xjbx-QQ-group-bot)了解相关功能！（毕竟正在迁移到 Nonebot2 ）
 
 ## 安装
 
