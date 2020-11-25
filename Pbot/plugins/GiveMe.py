@@ -1,17 +1,16 @@
-from nonebot import on_command
 from nonebot.adapters.cqhttp import Bot, Event
-from nonebot.rule import regex
-from Pbot.utils import cksafe
+from nonebot.plugin import on_regex
+from Pbot.utils import cksafe, getImage
 import Pbot.cq as cq
 
-setu = on_command("来份涩图", rule=regex("^来.*份.*(涩|色)图"))
+setu = on_regex("^来.*份.*(涩|色)图")
 
 
 @setu.handle()
 async def sst(bot: Bot, event: Event, state: dict):
     msg = str(event.message).strip()
     api = r"https://api.lolicon.app/setu/"
-    parm = {"apikey": bot.config.LoliAPI, "r18": "1", "size1200": "true"}
+    parm = {"apikey": bot.config.loliapi, "r18": "1", "size1200": "true"}
     if event.detail_type == "group":
         safe = await cksafe(event.group_id)
     else:
@@ -38,4 +37,11 @@ async def sst(bot: Bot, event: Event, state: dict):
             ),
             at_sender=True,
         )
-        await setu.send(cq.image(ShitJson["data"][0]["url"]))
+        print(ShitJson["data"][0]["url"])
+        await setu.send(
+            await getImage(
+                bot.config.session,
+                ShitJson["data"][0]["url"],
+                f"pixiv{'/r18' if parm['r18']==1 else '/'}",
+            )
+        )

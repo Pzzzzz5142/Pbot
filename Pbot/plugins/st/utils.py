@@ -1,6 +1,7 @@
 from nonebot.adapters.cqhttp import Bot
-import random, cq, base64
-from utils import *
+import random, base64
+from Pbot.utils import *
+import Pbot.cq as cq
 
 pixivicurl = "https://api.pixivic.com/"
 

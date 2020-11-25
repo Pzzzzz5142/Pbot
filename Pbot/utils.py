@@ -43,14 +43,20 @@ def imageProxy_cat(url):
     return url.replace("i.pximg.net", "i.pixiv.cat")
 
 
-async def getImage(session: ClientSession, url: str, **kwargs):
+async def getImage(session: ClientSession, url: str, dir: str = "", **kwargs):
     fd = re.search(r"\?", url)
+    if len(dir) > 0 and dir[-1] != "/":
+        dir += "/"
     if fd != None:
         url = url[: fd.span()[0]]
+    _, pic = path.split(url)
+    pic = dir + pic
+    if path.exists(nonebot.get_driver().config.imgpath + pic):
+        return cq.image(pic)
     async with session.get(url, **kwargs) as resp:
         if resp.status != 200:
             return "下载图片失败，网络错误 {}。".format(resp.status)
-        _, pic = path.split(url)
+
         img = await resp.read()
         with open(nonebot.get_driver().config.imgpath + pic, "wb") as fl:
             fl.write(img)
@@ -118,6 +124,6 @@ async def getSetu(sess, r18: bool) -> str:
 
 
 async def cksafe(gid: int):
-    if gid != 145029700:
+    if gid == 145029700:
         return False
     return True

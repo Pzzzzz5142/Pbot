@@ -1,5 +1,6 @@
 from nonebot import on_command
-from nonebot.adapters.cqhttp import Bot, Event, unescape
+from nonebot.message import handle_event
+from nonebot.adapters.cqhttp import Bot, Event, unescape, Message
 from argparse import ArgumentParser
 from Pbot.db import Mg
 from Pbot.utils import doc, get_bot
@@ -10,6 +11,7 @@ import asyncio
 from nonebot.sched import scheduler
 
 rss = on_command("rss")
+gift = on_command("带礼包")
 NOUPDATE = ["loli", "hpoi"]
 NOBROADCAST = ["gcores"]
 FULLTEXT = ["pprice", "stz"]
@@ -165,6 +167,15 @@ async def firstHandle(bot: Bot, event: Event, state: dict):
                 ),
                 loop,
             )
+
+
+@gift.handle()
+async def firsthandle(bot: Bot, event: Event, state: dict):
+    cmd = "rss pixiv_day_r18 pixiv_week_r18 pixiv_day_male_r18"
+    event.raw_message = cmd
+    event.raw_event["raw_message"] = cmd
+    event.message = Message(cmd)
+    asyncio.create_task(handle_event(bot, event))
 
 
 up = on_command("up", priority=1)

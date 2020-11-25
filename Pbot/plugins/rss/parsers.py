@@ -8,7 +8,7 @@ import nonebot
 import pytz
 from bs4 import BeautifulSoup, Comment
 
-from utils import getImage, imageProxy, transtime
+from Pbot.utils import getImage, imageProxy, transtime
 
 
 async def rssBili(uid, max_num: int = -1):
