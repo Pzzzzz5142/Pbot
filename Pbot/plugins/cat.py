@@ -1,6 +1,6 @@
 from nonebot import on_command
 from nonebot.adapters.cqhttp import Bot, Event
-import cq
+import Pbot.cq as cq
 
 cat = on_command("cat", priority=1)
 

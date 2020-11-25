@@ -2,7 +2,7 @@ import asyncio
 import re
 from datetime import datetime, timedelta
 
-import cq
+import Pbot.cq as cq
 import feedparser as fp
 import nonebot
 import pytz

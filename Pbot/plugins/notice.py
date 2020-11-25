@@ -1,7 +1,7 @@
 from nonebot import on_notice
 from nonebot.adapters.cqhttp import Bot, Event, unescape
-from utils import getSetu
-import cq
+from Pbot.utils import getSetu
+import Pbot.cq as cq
 
 poke = on_notice()
 helloNew = on_notice()

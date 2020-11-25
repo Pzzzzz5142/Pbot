@@ -2,7 +2,7 @@ from nonebot.sched import scheduler
 from Pbot.db import Mg
 from nonebot.exception import ActionFailed, ApiNotAvailable, NetworkError, RequestDenied
 from Pbot.db import Backup
-from utils import get_bot
+from Pbot.utils import get_bot
 
 
 @scheduler.scheduled_job("cron", hour="5", minute="0")

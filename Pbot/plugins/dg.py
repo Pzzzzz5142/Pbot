@@ -2,7 +2,7 @@ from nonebot import on_command
 import nonebot
 from nonebot.rule import startswith
 from nonebot.adapters.cqhttp import Bot, Event
-import cq, json
+import Pbot.cq as cq, json
 
 dg = on_command("点歌", rule=startswith("点歌"))
 

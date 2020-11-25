@@ -2,9 +2,9 @@ from nonebot import on_command
 from nonebot.adapters.cqhttp import Bot, Event, unescape
 from argparse import ArgumentParser
 from Pbot.db import Mg
-from utils import doc, get_bot
+from Pbot.utils import doc, get_bot
 from .utils import sendrss, getrss, gtfun, handlerss
-import cq
+import Pbot.cq as cq
 from .models import *
 import asyncio
 from nonebot.sched import scheduler

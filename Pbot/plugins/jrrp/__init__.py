@@ -2,7 +2,7 @@ from nonebot import on_command
 from nonebot.adapters.cqhttp import Bot, Event, unescape
 import datetime
 import random
-import cq
+import Pbot.cq as cq
 from .models import Jrrp
 
 jrrp = on_command("jrrp")

@@ -2,12 +2,12 @@ import asyncio
 from .models import *
 import sys
 
-import cq
+import Pbot.cq as cq
 import feedparser as fp
 from nonebot.exception import ActionFailed, ApiNotAvailable, NetworkError, RequestDenied
 from nonebot.log import logger
 
-from utils import doc, hourse
+from Pbot.utils import doc, hourse
 
 from .parsers import *
 

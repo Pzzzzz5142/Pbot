@@ -1,5 +1,6 @@
 from aiohttp import ClientSession
-import re, cq, random, datetime
+import re, random, datetime
+import Pbot.cq as cq
 
 import nonebot
 import os.path as path
@@ -114,3 +115,9 @@ async def getSetu(sess, r18: bool) -> str:
             "https://cdn.jsdelivr.net/gh/ipchi9012/setu_pics@latest/"
             + ShitList[ind1]["path"]
         )
+
+
+async def cksafe(gid: int):
+    if gid != 145029700:
+        return False
+    return True
