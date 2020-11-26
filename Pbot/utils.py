@@ -152,7 +152,7 @@ async def getSetuHigh(
         logger.debug("检测到 Lolicon API ！")
         if bot.config.loliapi in overCall:
             logger.debug(
-                f"时间差 {(datetime.datetime.now()-overCall[RequestApi][1]).seconds} 秒。ttl {overCall[RequestApi][1]}"
+                f"时间差 {(datetime.datetime.now()-overCall[RequestApi][1]).seconds} 秒。距离下一次在线请求还剩 {overCall[RequestApi][0]-(datetime.datetime.now()-overCall[RequestApi][1]).seconds+1} 秒。"
             )
             if (datetime.datetime.now() - overCall[RequestApi][1]).seconds <= overCall[
                 RequestApi
@@ -167,7 +167,7 @@ async def getSetuHigh(
             OverCalled = False
             if api in overCall:
                 logger.debug(
-                    f"时间差 {(datetime.datetime.now()-overCall[api][1]).seconds} 秒。ttl {overCall[api][1]}"
+                    f"时间差 {(datetime.datetime.now()-overCall[api][1]).seconds} 秒。距离下一次在线请求还剩 {overCall[api][0]-(datetime.datetime.now()-overCall[api][1]).seconds+1} 秒。"
                 )
                 if (datetime.datetime.now() - overCall[api][1]).seconds <= overCall[
                     api
