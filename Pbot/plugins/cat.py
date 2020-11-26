@@ -3,7 +3,7 @@ from nonebot.adapters.cqhttp import Bot, Event
 from nonebot.permission import SUPERUSER
 import Pbot.cq as cq
 
-cat = on_command("cat", permission=SUPERUSER, priority=1)
+cat = on_command("cat", priority=1)
 
 
 @cat.handle()

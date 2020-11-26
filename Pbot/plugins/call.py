@@ -2,7 +2,7 @@ from nonebot import on_command
 from nonebot.adapters.cqhttp import Bot, Event, unescape
 from nonebot.permission import SUPERUSER
 
-call = on_command("call", priority=1)
+call = on_command("call", permission=SUPERUSER, priority=1)
 
 
 @call.handle()

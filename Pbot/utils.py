@@ -191,6 +191,8 @@ async def getSetuHigh(
         ShitJson = await resp.json()
         if ShitJson["quota"] == 0:
             return await handleOverCall(bot, bot.config.loliapi, r18, ShitJson, now)
+        if len(ShitJson["data"]) == 0:
+            return None, f"没有搜到关于 {keyword} 的涩图哦。。。"
         if is_save:
             pic = await getImage(
                 bot.config.session,
