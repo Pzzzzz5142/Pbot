@@ -1,3 +1,4 @@
+import re
 from nonebot.adapters.cqhttp import Bot, Event
 from nonebot.plugin import on_regex
 from Pbot.utils import cksafe, getImage, getSetuHigh
@@ -18,7 +19,14 @@ async def sst(bot: Bot, event: Event, state: dict):
     else:
         r18 = False
 
-    pic, data = await getSetuHigh(bot, r18)
+    msg = re.sub("(r|R)18", "", msg)
+    fd = re.search("份.*(涩|色)", msg)
+    try:
+        keyword = msg[fd.start() + 1 : fd.end() - 1]
+    except:
+        keyword = ""
+
+    pic, data = await getSetuHigh(bot, r18, keyword)
     if isinstance(data, str):
         text = data
     else:
