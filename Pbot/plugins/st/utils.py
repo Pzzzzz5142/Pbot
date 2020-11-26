@@ -37,21 +37,19 @@ async def searchPic(bot: Bot, key_word: str, maxSanityLevel: int = 4):
     Good = [ind for ind in range(0, len(ShitJson["data"]))]
     try:
         while len(Good) != 0:
-            pics = ShitJson["data"]
-            ind = random.randint(0, len(Good))
-            ind = Good[ind]
+            pic = random.choice(ShitJson["data"])
             res = await getImage(
                 bot.config.session,
-                imageProxy(pics[ind]["imageUrls"][0]["large"], "img.cheerfun.dev"),
+                imageProxy(pic["imageUrls"][0]["large"], "img.cheerfun.dev"),
                 headers=headers,
             )
             if "失败" in res:
                 if "404" in res:
-                    Good.remove(ind)
+                    ShitJson["data"].remove(pic)
                     continue
                 else:
-                    res = cq.image(imageProxy_cat(pics[ind]["imageUrls"][0]["large"]))
-            _id = pics[ind]["id"]
+                    res = cq.image(imageProxy_cat(pic["imageUrls"][0]["large"]))
+            _id = pic["id"]
             break
     except:
         pass

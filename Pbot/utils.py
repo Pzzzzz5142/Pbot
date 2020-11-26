@@ -1,6 +1,10 @@
+import asyncio
+import os
+from random import randint
 from aiohttp import ClientSession
 import re, random, datetime
 import Pbot.cq as cq
+from nonebot.log import logger
 
 import nonebot
 import os.path as path
@@ -52,14 +56,17 @@ async def getImage(session: ClientSession, url: str, dir: str = "", **kwargs):
     _, pic = path.split(url)
     pic = dir + pic
     if path.exists(nonebot.get_driver().config.imgpath + pic):
+        logger.info("发送缓存图片{}".format(pic))
         return cq.image(pic)
     async with session.get(url, **kwargs) as resp:
         if resp.status != 200:
+            logger.error("下载图片失败，网络错误 {}。".format(resp.status))
             return "下载图片失败，网络错误 {}。".format(resp.status)
 
         img = await resp.read()
         with open(nonebot.get_driver().config.imgpath + pic, "wb") as fl:
             fl.write(img)
+        logger.info("已保存图片{}".format(pic))
         return cq.image(pic)
 
 
@@ -90,7 +97,7 @@ def get_bot():
         return list(nonebot.get_bots().values())[0]
 
 
-async def getSetu(sess, r18: bool) -> str:
+async def getSetuLow(sess, r18: bool) -> str:
     random.seed(datetime.datetime.now())
     async with sess.get(
         "https://cdn.jsdelivr.net/gh/ipchi9012/setu_pics@latest/setu{}_index.js".format(
@@ -103,12 +110,10 @@ async def getSetu(sess, r18: bool) -> str:
         ind1, ind2 = ShitText.index("("), ShitText.index(")")
         ShitText = ShitText[ind1 + 1 : ind2]
         ShitList = json.loads(ShitText)
-        ind1 = random.randint(0, len(ShitList))
+        ch = random.choice(ShitList)
 
     async with sess.get(
-        "https://cdn.jsdelivr.net/gh/ipchi9012/setu_pics@latest/{}.js".format(
-            ShitList[ind1]
-        )
+        "https://cdn.jsdelivr.net/gh/ipchi9012/setu_pics@latest/{}.js".format(ch)
     ) as resp:
         if resp.status != 200:
             return "网络错误：" + str(resp.status)
@@ -116,14 +121,90 @@ async def getSetu(sess, r18: bool) -> str:
         ind1 = ShitText.index("(")
         ShitText = ShitText[ind1 + 1 : -1]
         ShitList = json.loads(ShitText)
-        ind1 = random.randint(0, len(ShitList))
+        ch = random.choice(ShitList)
         return cq.image(
-            "https://cdn.jsdelivr.net/gh/ipchi9012/setu_pics@latest/"
-            + ShitList[ind1]["path"]
+            "https://cdn.jsdelivr.net/gh/ipchi9012/setu_pics@latest/" + ch["path"]
         )
+
+
+async def getSetuHigh(bot, r18: bool, keyword: str = "", is_save: bool = True) -> str:
+    random.seed(datetime.datetime.now())
+    api = r"https://api.lolicon.app/setu/"
+    parm = {"apikey": bot.config.loliapi, "r18": "1", "size1200": "true", "num": 10}
+    if keyword != "":
+        parm["keyword"] = keyword
+    if r18:
+        parm["r18"] = 1
+    else:
+        parm["r18"] = 0
+    async with bot.config.session.get(api, params=parm) as resp:
+        if resp.status != 200:
+            return None, "网络错误：" + str(resp.status)
+        ShitJson = await resp.json()
+        if ShitJson["quota"] == 0:
+            cache = [
+                "pixiv/" + ("r18/" if r18 else "") + pic.name
+                for pic in os.scandir(
+                    bot.config.imgpath + "pixiv/" + ("r18" if r18 else "")
+                )
+                if pic.is_file()
+            ]
+            pic = random.choice(cache)
+            fd = re.search("/\d+", pic)
+            _id = pic[fd.start() + 1 : fd.end()]
+            text = f"现在是缓存时间哦！\n距离下一次在线请求还剩 {ShitJson['quota_min_ttl']+1} 秒。"
+            logger.info(re.sub("\n", "", text))
+            try:
+                text = await getPixivDetail(bot.config.session, _id)
+            except:
+                pass
+            return cq.image(pic), text
+        if is_save:
+            pic = await getImage(
+                bot.config.session,
+                ShitJson["data"][0]["url"],
+                f"pixiv{'/r18' if r18 else '/'}",
+            )
+        else:
+            pic = cq.image(ShitJson["data"][0]["url"])
+
+        loop = asyncio.get_event_loop()
+        for item in ShitJson["data"]:
+            asyncio.run_coroutine_threadsafe(
+                getImage(
+                    bot.config.session, item["url"], f"pixiv{'/r18' if r18 else '/'}",
+                ),
+                loop,
+            )
+
+        return pic, ShitJson["data"][0]
 
 
 async def cksafe(gid: int):
     if gid == 145029700:
         return False
     return True
+
+
+async def getPixivDetail(session: ClientSession, _id):
+    api = r"https://api.imjad.cn/pixiv/v2/"
+    parm = {"id": _id}
+    async with session.get(api, params=parm) as resp:
+        if resp.status != 200:
+            raise Exception
+        ShitJson = await resp.json()
+        return transform(ShitJson)
+
+
+def transform(data):
+    if not isinstance(data, dict):
+        return data
+    if data["illust"]:
+        data = data["illust"]
+    return {
+        "author": data["user"]["account"],
+        "pid": data["id"],
+        "tags": [i["name"] for i in data["tags"]],
+        "title": data["title"],
+    }
+

@@ -15,6 +15,7 @@ psycopg2 = "^2.8.6"
 feedparser = "^6.0.2"
 bs4 = "^0.0.1"
 lxml = "^4.6.1"
+langdetect = "^1.0.8"
 
 [tool.poetry.dev-dependencies]
 nonebot-test = "^0.1.0"

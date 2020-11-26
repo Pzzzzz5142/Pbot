@@ -1,8 +1,9 @@
 from nonebot import on_command
 from nonebot.adapters.cqhttp import Bot, Event
+from nonebot.permission import SUPERUSER
 import Pbot.cq as cq
 
-cat = on_command("cat", priority=1)
+cat = on_command("cat", permission=SUPERUSER, priority=1)
 
 
 @cat.handle()
@@ -46,12 +47,9 @@ async def catPixiv(bot: Bot, _id: int, p=None, **kwargs):
         if p != None:
             if p == "*":
                 if total > 1:
-                    return [
-                        "这是一个有多页的pid！",
-                        (
-                            cq.image("https://pixiv.cat/{}-{}.jpg".format(_id, i))
-                            for i in range(1, total + 1)
-                        ),
+                    return ["这是一个有多页的pid！"] + [
+                        cq.image("https://pixiv.cat/{}-{}.jpg".format(_id, i))
+                        for i in range(1, total + 1)
                     ]
                 else:
                     return [cq.image("https://pixiv.cat/{}.jpg".format(_id))]
