@@ -15,6 +15,8 @@ async def firsthandle(bot: Bot, event: Event, state: dict):
         if event.group_id == 145029700:
             hour = datetime.today().hour
             r18 = hour <= 7 or hour >= 22
+        if event.group_id == 1037557679:
+            r18 = True
         x, err = await getSetuHigh(bot, r18)
         if x == None:
             await poke.finish(err)

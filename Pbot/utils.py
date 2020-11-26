@@ -3,6 +3,8 @@ import os
 from random import randint
 from aiohttp import ClientSession
 import re, random, datetime
+
+from nonebot.adapters.cqhttp import Bot
 import Pbot.cq as cq
 from nonebot.log import logger
 
@@ -127,38 +129,68 @@ async def getSetuLow(sess, r18: bool) -> str:
         )
 
 
-async def getSetuHigh(bot, r18: bool, keyword: str = "", is_save: bool = True) -> str:
+overCall = {}
+
+
+async def getSetuHigh(
+    bot: Bot, r18: bool, keyword: str = "", is_save: bool = True
+) -> str:
     random.seed(datetime.datetime.now())
-    api = r"https://api.lolicon.app/setu/"
-    parm = {"apikey": bot.config.loliapi, "r18": "1", "size1200": "true", "num": 10}
+    LoliUrl = r"https://api.lolicon.app/setu/"
+    parm = {"apikey": None, "r18": "1", "size1200": "true", "num": 10}
     if keyword != "":
         parm["keyword"] = keyword
     if r18:
         parm["r18"] = 1
     else:
         parm["r18"] = 0
-    async with bot.config.session.get(api, params=parm) as resp:
+    OverCalled = True
+    RequestApi = None
+    if bot.config.loliapi:
+        RequestApi = bot.config.loliapi
+        OverCalled = False
+        logger.debug("检测到 Lolicon API ！")
+        if bot.config.loliapi in overCall:
+            logger.debug(
+                f"时间差 {(datetime.datetime.now()-overCall[RequestApi][1]).seconds} 秒。ttl {overCall[RequestApi][1]}"
+            )
+            if (datetime.datetime.now() - overCall[RequestApi][1]).seconds <= overCall[
+                RequestApi
+            ][0]:
+                logger.debug("主动截断！")
+                OverCalled = True
+
+    if bot.config.loliapis and OverCalled:
+        logger.debug("检测到多个 Lolicon API ！")
+        for api in bot.config.loliapis:
+            RequestApi = api
+            OverCalled = False
+            if api in overCall:
+                logger.debug(
+                    f"时间差 {(datetime.datetime.now()-overCall[api][1]).seconds} 秒。ttl {overCall[api][1]}"
+                )
+                if (datetime.datetime.now() - overCall[api][1]).seconds <= overCall[
+                    api
+                ][0]:
+                    logger.debug("主动截断！")
+                    OverCalled = True
+                else:
+                    break
+
+    if OverCalled:
+        return await handleOverCall(bot, RequestApi, r18)
+    if RequestApi:
+        parm["apikey"] = RequestApi
+    else:
+        logger.warning("未检测到 LoliconAPI 的配置！涩图请求可能受限！")
+        parm["num"] = 1
+    now = datetime.datetime.now()
+    async with bot.config.session.get(LoliUrl, params=parm) as resp:
         if resp.status != 200:
             return None, "网络错误：" + str(resp.status)
         ShitJson = await resp.json()
         if ShitJson["quota"] == 0:
-            cache = [
-                "pixiv/" + ("r18/" if r18 else "") + pic.name
-                for pic in os.scandir(
-                    bot.config.imgpath + "pixiv/" + ("r18" if r18 else "")
-                )
-                if pic.is_file()
-            ]
-            pic = random.choice(cache)
-            fd = re.search("/\d+", pic)
-            _id = pic[fd.start() + 1 : fd.end()]
-            text = f"现在是缓存时间哦！\n距离下一次在线请求还剩 {ShitJson['quota_min_ttl']+1} 秒。"
-            logger.info(re.sub("\n", "", text))
-            try:
-                text = await getPixivDetail(bot.config.session, _id)
-            except:
-                pass
-            return cq.image(pic), text
+            return await handleOverCall(bot, bot.config.loliapi, r18, ShitJson, now)
         if is_save:
             pic = await getImage(
                 bot.config.session,
@@ -178,6 +210,26 @@ async def getSetuHigh(bot, r18: bool, keyword: str = "", is_save: bool = True) -
             )
 
         return pic, ShitJson["data"][0]
+
+
+async def handleOverCall(bot: Bot, api, r18, ShitJson: dict = None, now=None):
+    if ShitJson:
+        overCall[api] = (ShitJson["quota_min_ttl"], now)
+    cache = [
+        "pixiv/" + ("r18/" if r18 else "") + pic.name
+        for pic in os.scandir(bot.config.imgpath + "pixiv/" + ("r18" if r18 else ""))
+        if pic.is_file()
+    ]
+    pic = random.choice(cache)
+    fd = re.search("/\d+", pic)
+    _id = pic[fd.start() + 1 : fd.end()]
+    text = f"现在是缓存时间哦！\n距离下一次在线请求还剩 {overCall[api][0]-(datetime.datetime.now()-overCall[api][1]).seconds+1} 秒。"
+    logger.info(re.sub("\n", "", text))
+    try:
+        text = await getPixivDetail(bot.config.session, _id)
+    except:
+        pass
+    return cq.image(pic), text
 
 
 async def cksafe(gid: int):
