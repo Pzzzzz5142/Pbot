@@ -1,6 +1,6 @@
 import re
-from nonebot.adapters.cqhttp import Bot, Event
-from nonebot.plugin import on_regex
+from nonebot.adapters.cqhttp import Bot, Event, unescape
+from nonebot.plugin import on, on_command, on_regex
 from Pbot.utils import cksafe, getImage, getSetuHigh
 import Pbot.cq as cq
 
@@ -43,3 +43,12 @@ async def sst(bot: Bot, event: Event, state: dict):
         await setu.send(pic)
     except:
         pass
+
+
+act = on_command("act", priority=1)
+
+
+@act.handle()
+async def firsthandle(bot: Bot, event: Event, state: dict):
+    await act.finish(unescape(cq.image("activity.jpg")))
+
