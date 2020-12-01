@@ -1,6 +1,6 @@
 from gino import Gino
 from nonebot.log import logger
-import nonebot
+import nonebot, aiohttp
 
 db = Gino()
 
@@ -9,6 +9,8 @@ async def init() -> None:
     """
     Initialize database module.
     """
+    config = nonebot.get_driver().config
+    config.session = aiohttp.ClientSession()
     config = nonebot.get_driver().config
     logger.debug("Initializing database")
     if getattr(config, "db_dsn", None):

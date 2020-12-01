@@ -29,7 +29,6 @@ nonebot.load_plugins("Pbot/plugins")
 # do something...
 
 config = nonebot.get_driver().config
-config.session = aiohttp.ClientSession()
 if config.imgpath and config.imgpath[-1] != "/":
     config.imgpath += "/"
 
