@@ -10,6 +10,7 @@
 
 + **搜图** - st：包括以图搜图及关键字搜图。
 + **机器翻译** - wm
++ **Rss订阅及查看** - rss
 + **点歌** - 点歌
 + **戳一戳**
 + **切噜一下** - 切噜一下 | 切噜～♪ ：（抄自[Hoshino](https://github.com/Ice-Cirno/HoshinoBot)
