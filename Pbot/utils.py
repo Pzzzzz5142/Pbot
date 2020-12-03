@@ -258,7 +258,7 @@ def transform(data):
     return {
         "author": data["user"]["account"],
         "pid": data["id"],
-        "tags": [i["name"] for i in data["tags"]],
+        "tags": ["#" + i["name"] for i in data["tags"]],
         "title": data["title"],
     }
 

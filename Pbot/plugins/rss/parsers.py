@@ -40,12 +40,12 @@ async def rssBili(uid, max_num: int = -1):
         ):
             continue
 
-        fdres = re.match(r".*?<br>", item.summary, re.S)
+        fdres = re.match(r".*?<br />", item.summary, re.S)
 
         if fdres == None:
             text = item.summary
         else:
-            text = fdres.string[int(fdres.span()[0]) : fdres.span()[1] - len("<br>")]
+            text = fdres.string[int(fdres.span()[0]) : fdres.span()[1] - len("<br />")]
 
         text = re.sub("<img alt.*>", "", text)
 

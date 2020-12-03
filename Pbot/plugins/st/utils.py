@@ -1,11 +1,14 @@
 from nonebot.adapters.cqhttp import Bot
-import random, base64
+import random, base64, re
 from Pbot.utils import *
 import Pbot.cq as cq
+from bs4 import BeautifulSoup
 
 pixivicurl = "https://api.pixivic.com/"
 
 sauceUrl = r"https://saucenao.com/search.php"
+
+ascii2dUrl = "https://ascii2d.net/"
 
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.79 Safari/537.36",
@@ -114,8 +117,59 @@ async def sauce(bot: Bot, purl: str) -> str:
             if "pixiv_id" in ShitJson["results"][0]["data"]
             else ""
         )
-        + (f"\n来源（请复制到浏览器中打开，不要直接打开）：\n{murl}" if murl != "" else "")
+        + (f"\n网址（请复制到浏览器中打开，不要直接打开）：\n{murl}" if murl != "" else "")
         + "\n相似度："
         + str(ShitJson["results"][0]["header"]["similarity"])
         + "%"
+    )
+
+
+async def ascii2d(bot: Bot, purl: str):
+    print(ascii2dUrl + "search/url/" + purl)
+    async with bot.config.session.get(ascii2dUrl + "search/url/" + purl) as resp:
+        if resp.status != 200:
+            return "错误：" + str(resp.status)
+        resUrl = str(resp.url)
+        logger.debug("接收到：" + resUrl)
+    resUrl = resUrl.replace("/color/", "/bovw/")
+    print(resUrl)
+
+    async with bot.config.session.get(resUrl) as resp:
+        if resp.status != 200:
+            return "错误：" + str(resp.status)
+        content = await resp.read()
+        sp = BeautifulSoup(content, "lxml")
+
+        res = sp.find_all("div", class_="row item-box")[1]
+
+        thumbnail = cq.image(ascii2dUrl + res.find("img", loading="lazy")["src"])
+        h6 = res.find("h6")
+        title, author = [i.text for i in h6.find_all("a")]
+        source = h6.find("a")["href"]
+        site = h6.find("small").text.strip()
+        if "pixiv" in source:
+            fd = re.search(r"/[0-9]+", source)
+            _id = source[fd.start() + 1 : fd.end()]
+            pixiv = _id
+            logger.debug("搜索到 " + pixiv)
+        else:
+            pixiv = None
+            _id = None
+
+    if pixiv:
+        print(pixiv)
+        pixiv = await getPixivDetail(bot.config.session, _id)
+        pixiv = pixiv["tags"]
+
+    return (
+        thumbnail
+        + f"\n标题："
+        + title
+        + "\n作者："
+        + author
+        + ("\ntags: {}\npixiv id: {}".format("、".join(pixiv), _id) if pixiv else "")
+        + "\n来源："
+        + site
+        + "\n网址："
+        + hourse(source)
     )

@@ -31,10 +31,7 @@ async def sst(bot: Bot, event: Event, state: dict):
         text = data
     else:
         text = """发送中，。，。，。\npixiv id:{}\ntitle:{}\n作者:{}\ntags:{}""".format(
-            data["pid"],
-            data["title"],
-            data["author"],
-            "、".join(["#" + i for i in data["tags"]]),
+            data["pid"], data["title"], data["author"], "、".join(data["tags"])
         )
     await setu.send(
         text, at_sender=True,

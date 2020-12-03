@@ -1,10 +1,11 @@
 from nonebot import on_command
 from nonebot.adapters.cqhttp import Bot, Event, unescape
-from .utils import searchPic, pixivicurl, auth, sauce
+from .utils import searchPic, pixivicurl, auth, sauce, ascii2d
 import Pbot.cq as cq
 from nonebot.rule import regex
+import re
 
-st = on_command("st",rule=regex('^st'))
+st = on_command("st", rule=regex("^st"))
 
 
 @st.handle()
@@ -31,7 +32,14 @@ async def _(bot: Bot, event: Event, state: dict):
 async def _(bot: Bot, event: Event, state: dict):
     if "pic" in state:
         res = await sauce(bot, state["pic"])
-        await st.finish(unescape(res))
+        fd = re.search("[0-9]+\.[0-9]*%", res)
+        per = float(res[fd.start() : fd.end() - 1])
+        await st.send(unescape(res))
+        ther = 60
+        if per < ther:
+            await st.send("相似度低于 {} % 正在使用 ascii2d 搜索！".format(ther))
+            res = await ascii2d(bot, state["pic"])
+            await st.finish(res)
     else:
         state["SanityLevel"] = 4
         res, _id = await searchPic(bot, state["keyword"], state["SanityLevel"])
