@@ -108,14 +108,14 @@ async def sendrss(
     if qid not in locks:
         locks[qid] = asyncio.Lock()
     async with locks[qid]:
-        values = await Sub.query.where(
+        value = await Sub.query.where(
             (Sub.qid == qid) & (Sub.rss == source)
-        ).gino.all()
-        if len(values) == 0:
-            values = await Rss.query.where(Rss.id == source).gino.all()
-            qdt = values[0].pre
+        ).gino.first()
+        if value == None:
+            value = await Rss.query.where(Rss.id == source).gino.all()
+            qdt = value.pre
         else:
-            qdt = values[0].dt
+            qdt = value.dt
         cnt = 0
         is_read = False
         if ress == None:
@@ -217,9 +217,11 @@ async def sendrss(
             )
         except (RequestDenied, ApiNotAvailable, NetworkError, ActionFailed):
             logger.error(f"Send Ending Error! Processing QQ 「{qid}」")
-        if success_dt != "" and source != "自定义路由" and values[0].dt:
-            values[0].dt = success_dt
-            await values.apply()
+        if success_dt != "" and source != "自定义路由" and value.dt:
+            try:
+                await value.update(dt=success_dt).apply()
+            except:
+                logger.error('update 失败',exc_info=True)
     if feedBack:
         await bot.send_group_msg(
             group_id=feedBack, message=cq.at(qid) + f"「{doc[source]}」的资讯已私信，请查收。"
