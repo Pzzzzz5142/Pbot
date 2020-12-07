@@ -37,6 +37,7 @@ async def rssBili(uid, max_num: int = -1):
             ("封禁公告" in item.summary)
             or ("小讲堂" in item.summary)
             or ("中奖" in item.summary)
+            or ("转发" in item.summary)
         ):
             continue
 

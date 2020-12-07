@@ -140,15 +140,21 @@ async def ascii2d(bot: Bot, purl: str):
         if resp.status != 200:
             return "错误：" + str(resp.status)
         content = await resp.read()
+        with open("a.html", "w") as fl:
+            content = str(content, encoding="utf-8")
+            print(content, file=fl)
         sp = BeautifulSoup(content, "lxml")
 
         res = sp.find_all("div", class_="row item-box")[1]
 
         thumbnail = cq.image(ascii2dUrl + res.find("img", loading="lazy")["src"])
         h6 = res.find("h6")
-        title, author = [i.text for i in h6.find_all("a")]
-        source = h6.find("a")["href"]
-        site = h6.find("small").text.strip()
+        if h6:
+            title, author = [i.text for i in h6.find_all("a")]
+            source = h6.find("a")["href"]
+            site = h6.find("small").text.strip()
+        else:
+            title = author = source = site = "🈚️"
         if "pixiv" in source:
             fd = re.search(r"/[0-9]+", source)
             _id = source[fd.start() + 1 : fd.end()]
@@ -176,5 +182,5 @@ async def ascii2d(bot: Bot, purl: str):
         + "\n来源："
         + site
         + "\n网址："
-        + hourse(source)
+        + (hourse(source) if source != "🈚️" else source)
     )
