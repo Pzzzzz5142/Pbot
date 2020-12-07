@@ -32,12 +32,12 @@ async def _(bot: Bot, event: Event, state: dict):
 async def _(bot: Bot, event: Event, state: dict):
     if "pic" in state:
         res = await sauce(bot, state["pic"])
+        await st.send(unescape(res))
         fd = re.search("[0-9]+\.[0-9]*%", res)
         per = float(res[fd.start() : fd.end() - 1])
-        await st.send(unescape(res))
-        ther = 60
+        ther = 70
         if per < ther:
-            await st.send("相似度低于 {} % 正在使用 ascii2d 搜索！".format(ther))
+            await st.send("相似度低于 {}% 正在使用 ascii2d 搜索！".format(ther))
             res = await ascii2d(bot, state["pic"])
             await st.finish(res)
     else:

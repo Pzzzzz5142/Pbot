@@ -87,7 +87,7 @@ async def handlerss(
     for item in Suber:
         if item.dt != dt:
             asyncio.run_coroutine_threadsafe(
-                sendrss(item["qid"], bot, source, ress), loop,
+                sendrss(item.qid, bot, source, ress), loop,
             )
 
 
@@ -221,7 +221,7 @@ async def sendrss(
             try:
                 await value.update(dt=success_dt).apply()
             except:
-                logger.error('update 失败',exc_info=True)
+                logger.error("update 失败", exc_info=True)
     if feedBack:
         await bot.send_group_msg(
             group_id=feedBack, message=cq.at(qid) + f"「{doc[source]}」的资讯已私信，请查收。"

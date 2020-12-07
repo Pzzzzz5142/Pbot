@@ -202,6 +202,7 @@ async def getSetuHigh(
         else:
             pic = cq.image(ShitJson["data"][0]["url"])
 
+        ShitJson["data"][0]["tags"] = ["#" + i for i in ShitJson["data"][0]["tags"]]
         loop = asyncio.get_event_loop()
         for item in ShitJson["data"]:
             asyncio.run_coroutine_threadsafe(

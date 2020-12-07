@@ -1,5 +1,7 @@
 from nonebot.adapters.cqhttp import Bot
 import random, base64, re
+
+from pydantic.types import NoneBytes
 from Pbot.utils import *
 import Pbot.cq as cq
 from bs4 import BeautifulSoup
@@ -157,9 +159,11 @@ async def ascii2d(bot: Bot, purl: str):
             _id = None
 
     if pixiv:
-        print(pixiv)
-        pixiv = await getPixivDetail(bot.config.session, _id)
-        pixiv = pixiv["tags"]
+        try:
+            pixiv = await getPixivDetail(bot.config.session, _id)
+            pixiv = pixiv["tags"]
+        except:
+            pixiv = False
 
     return (
         thumbnail
@@ -167,7 +171,8 @@ async def ascii2d(bot: Bot, purl: str):
         + title
         + "\n作者："
         + author
-        + ("\ntags: {}\npixiv id: {}".format("、".join(pixiv), _id) if pixiv else "")
+        + (("\ntags: {}".format("、".join(pixiv))) if pixiv else "")
+        + (("\npixiv id: {}".format(_id)) if pixiv != None else "")
         + "\n来源："
         + site
         + "\n网址："
