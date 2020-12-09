@@ -140,9 +140,6 @@ async def ascii2d(bot: Bot, purl: str):
         if resp.status != 200:
             return "错误：" + str(resp.status)
         content = await resp.read()
-        with open("a.html", "w") as fl:
-            content = str(content, encoding="utf-8")
-            print(content, file=fl)
         sp = BeautifulSoup(content, "lxml")
 
         res = sp.find_all("div", class_="row item-box")[1]
