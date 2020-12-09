@@ -33,12 +33,26 @@
 | ？     | 咕咕咕                                   | 没想好                  |
 | ---    | （可能永远无法完成（真的不大可能有（（（ | web UI                  |
 
-> 现在 wiki 在 Working 中。可以先看[这里](https://github.com/Pzzzzz5142/xjbx-QQ-group-bot)了解老 bot 的相关功能介绍！（毕竟正在迁移到 Nonebot2 ）
+> 现在 wiki 还在 Working 中。可以先看 [这里](https://github.com/Pzzzzz5142/xjbx-QQ-group-bot) 了解老 bot 的相关功能介绍！（毕竟正在迁移到 Nonebot2 ）
 
 ## 安装
 
-Working 中
+### 安装 Pbot 本体
+
+*Working 中*
+
+### 安装数据库
+
+由于本 bot 使用的是一个异步框架，同时由于 sqlite 本身不支持异步的操作（~~或者说我没找到~~）。因此涉及到持久化的功能都使用到了 postgreSQL 数据库。
+
+使用到数据库的功能包括：`rss`记录推送及订阅信息、`功能开关`和`今日人品`。
+
+如果你想使用上述功能，则**必须**安装 postgreSQL 和 alembic。其中 alembic 用于数据库的迁移。
+
+当然如果你觉得这部分比较复杂或者不需要上述三个功能，这可以无视掉这一步。
+
+*Working 中*
 
 ## 配置
 
-Working 中
+*Working 中*
