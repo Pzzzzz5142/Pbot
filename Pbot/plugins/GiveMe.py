@@ -1,8 +1,10 @@
 import re
 from nonebot.adapters.cqhttp import Bot, Event, unescape
-from nonebot.plugin import on, on_command, on_regex
-from Pbot.utils import cksafe, getImage, getSetuHigh
+from nonebot.plugin import on, on_command, on_message, on_regex
+from Pbot.utils import cksafe,  getSetuHigh
+from Pbot.rule import ckimg
 import Pbot.cq as cq
+from datetime import datetime
 
 setu = on_regex("^来.*份.*(涩|色)图")
 
@@ -49,3 +51,20 @@ act = on_command("act", priority=1)
 async def firsthandle(bot: Bot, event: Event, state: dict):
     await act.finish(unescape(cq.image("activity.jpg")))
 
+stCome=on_message(rule=ckimg())
+
+@stCome.handle()
+async def pre(bot: Bot, event: Event, state: dict):
+    r18 = False
+    if event.group_id == 145029700:
+        hour = datetime.today().hour
+        r18 = hour <= 7 or hour >= 22
+    if event.group_id == 1037557679:
+        r18 = True
+    x, err = await getSetuHigh(bot, r18)
+    if x == None:
+        await stCome.finish(err)
+    try:
+        await stCome.send(unescape(x))
+    except:
+        await stCome.send("呀，发送失败辣，。，")
