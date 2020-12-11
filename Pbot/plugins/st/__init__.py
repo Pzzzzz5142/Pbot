@@ -1,3 +1,4 @@
+from loguru import logger
 from nonebot import on_command
 from nonebot.adapters.cqhttp import Bot, Event, unescape
 from .utils import searchPic, pixivicurl, auth, sauce, ascii2d
@@ -32,6 +33,7 @@ async def _(bot: Bot, event: Event, state: dict):
 async def _(bot: Bot, event: Event, state: dict):
     if "pic" in state:
         res = await sauce(bot, state["pic"])
+        logger.debug(unescape(res))
         await st.send(unescape(res))
         fd = re.search("[0-9]+\.[0-9]*%", res)
         per = float(res[fd.start() : fd.end() - 1])

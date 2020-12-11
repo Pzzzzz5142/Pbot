@@ -107,6 +107,7 @@ async def sauce(bot: Bot, purl: str) -> str:
         + (
             f"\nsource：{ShitJson['results'][0]['data']['source']}"
             if "source" in ShitJson["results"][0]["data"]
+            and "http" != ShitJson["results"][0]["data"]["source"][:4]
             else ""
         )
         + (
@@ -115,11 +116,30 @@ async def sauce(bot: Bot, purl: str) -> str:
             else ""
         )
         + (
+            f"\n作者：{ShitJson['results'][0]['data']['creator']}"
+            if "creator" in ShitJson["results"][0]["data"]
+            else ""
+        )
+        + (
+            f"\n素材：{ShitJson['results'][0]['data']['material']}"
+            if "material" in ShitJson["results"][0]["data"]
+            else ""
+        )
+        + (
+            f"\n角色：{ShitJson['results'][0]['data']['characters']}"
+            if "characters" in ShitJson["results"][0]["data"]
+            else ""
+        )
+        + (
             f"\npixiv id: {ShitJson['results'][0]['data']['pixiv_id']}\n画师: {ShitJson['results'][0]['data']['member_name']}\n画师id: {ShitJson['results'][0]['data']['member_id']}"
             if "pixiv_id" in ShitJson["results"][0]["data"]
             else ""
         )
-        + (f"\n网址（请复制到浏览器中打开，不要直接打开）：\n{murl}" if murl != "" else "")
+        + (
+            (f"\n网址（请复制到浏览器中打开，不要直接打开）：\n{murl}" if murl != "" else "")
+            if "pixiv_id" not in ShitJson["results"][0]["data"]
+            else ""
+        )
         + "\n相似度："
         + str(ShitJson["results"][0]["header"]["similarity"])
         + "%"
@@ -178,6 +198,9 @@ async def ascii2d(bot: Bot, purl: str):
         + (("\npixiv id: {}".format(_id)) if pixiv != None else "")
         + "\n来源："
         + site
-        + "\n网址："
-        + (hourse(source) if source != "🈚️" else source)
+        + (
+            f"\n网址：{hourse(source) if source != '🈚️' else source}"
+            if pixiv == None
+            else ""
+        )
     )

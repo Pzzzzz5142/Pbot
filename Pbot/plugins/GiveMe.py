@@ -1,7 +1,7 @@
 import re
 from nonebot.adapters.cqhttp import Bot, Event, unescape
-from nonebot.plugin import on, on_command, on_message, on_regex
-from Pbot.utils import cksafe,  getSetuHigh
+from nonebot.plugin import on_command, on_message, on_regex
+from Pbot.utils import cksafe, getSetuHigh
 from Pbot.rule import ckimg
 import Pbot.cq as cq
 from datetime import datetime
@@ -51,7 +51,9 @@ act = on_command("act", priority=1)
 async def firsthandle(bot: Bot, event: Event, state: dict):
     await act.finish(unescape(cq.image("activity.jpg")))
 
-stCome=on_message(rule=ckimg())
+
+stCome = on_message(rule=ckimg("b407f708a2c6a506342098df7cac4a57.image"))
+
 
 @stCome.handle()
 async def pre(bot: Bot, event: Event, state: dict):
