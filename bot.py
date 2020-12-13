@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import nonebot
-import aiohttp
 from Pbot.db import init
+from nonebot.adapters.cqhttp import Bot as CQHTTPBot
 
 # Custom your logger
 #
@@ -19,8 +19,10 @@ nonebot.init()
 app = nonebot.get_asgi()
 
 driver = nonebot.get_driver()
+driver.register_adapter("cqhttp", CQHTTPBot)
 driver.on_startup(init)
 
+nonebot.load_plugin("nonebot_plugin_apscheduler")
 nonebot.load_plugins("Pbot/plugins")
 
 # Modify some config / config depends on loaded configs

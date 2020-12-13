@@ -8,7 +8,9 @@ from .utils import sendrss, getrss, gtfun, handlerss
 import Pbot.cq as cq
 from .models import *
 import asyncio
-from nonebot.sched import scheduler
+from nonebot import require
+
+scheduler = require("nonebot_plugin_apscheduler").scheduler
 
 rss = on_command("rss")
 gift = on_command("带礼包")

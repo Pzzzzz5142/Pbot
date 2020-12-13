@@ -121,13 +121,17 @@ async def sauce(bot: Bot, purl: str) -> str:
             else ""
         )
         + (
-            f"\n素材：{ShitJson['results'][0]['data']['material']}"
-            if "material" in ShitJson["results"][0]["data"]
-            else ""
-        )
-        + (
-            f"\n角色：{ShitJson['results'][0]['data']['characters']}"
-            if "characters" in ShitJson["results"][0]["data"]
+            (
+                f"\n素材：{ShitJson['results'][0]['data']['material']}"
+                if "material" in ShitJson["results"][0]["data"]
+                else ""
+            )
+            + (
+                f"\n角色：{ShitJson['results'][0]['data']['characters']}"
+                if "characters" in ShitJson["results"][0]["data"]
+                else ""
+            )
+            if False
             else ""
         )
         + (
