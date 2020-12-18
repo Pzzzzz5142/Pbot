@@ -63,7 +63,11 @@ async def handlerss(
         if is_broadcast:
             for gp_id in broadcastgroup:
                 try:
-                    if gp_id != 145029700 and source == "stz" and is_fullText:
+                    if (
+                        gp_id != 145029700
+                        and (source == "stz" or source == "boss_notice")
+                        and is_fullText
+                    ):
                         continue
                     if source == "stz":
                         for item in res:

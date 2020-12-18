@@ -11,7 +11,7 @@ wm = on_command("wm", priority=1)
 
 @wm.handle()
 async def firsthandle(bot: Bot, event: Event, state: dict):
-    arg = event.plain_text.strip()
+    arg = event.raw_message.strip()
 
     parser = ArgumentParser()
 

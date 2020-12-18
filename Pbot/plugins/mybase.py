@@ -8,7 +8,7 @@ echo = on_command("echo", priority=1)
 @echo.handle()
 async def firsthandle(bot: Bot, event: Event, state: dict):
     print(str(event.message))
-    await echo.finish(str(event.plain_text))
+    await echo.finish(str(event.raw_message))
 
 
 say = on_command("say", priority=1, permission=SUPERUSER)

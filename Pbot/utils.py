@@ -33,6 +33,7 @@ doc = {
     "pixiv_day_female_r18": "Pixiv 每日热榜 女性向 R-18",
     "pixiv_week_r18g": "Pixiv 每周热榜 R18g",
     "stz": "涩图bot",
+    "boss_notice": "会战boss提醒",
 }
 
 

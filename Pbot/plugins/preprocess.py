@@ -8,7 +8,9 @@ async def pre(bot: Bot, event: Event, state: dict):
         event.current_arg_images = [
             seg.data["url"] for seg in event.message if seg.type == "image"
         ]
-'''
+
+
+"""
     if event.detail_type != "group":
         return
     async with db.pool.acquire() as conn:
@@ -19,4 +21,4 @@ async def pre(bot: Bot, event: Event, state: dict):
             return
         if len(values) == 0:
             raise CanceledException("该群不处于白名单中")
-'''
+"""

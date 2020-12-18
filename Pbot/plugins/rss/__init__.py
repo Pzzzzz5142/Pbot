@@ -16,16 +16,22 @@ rss = on_command("rss")
 gift = on_command("带礼包")
 NOUPDATE = ["loli", "hpoi"]
 NOBROADCAST = ["gcores"]
-FULLTEXT = ["pprice", "stz"]
+FULLTEXT = ["pprice", "stz", "boss_notice"]
 
 
-@scheduler.scheduled_job("interval", minutes=20)
+@scheduler.scheduled_job("interval", minutes=10)
 async def _():
     bot = get_bot()
     loop = asyncio.get_event_loop()
     values = await Mg.query.where(Mg.rss == True).gino.all()
     values = [int(item.gid) for item in values]
     for key in doc:
+        if key == "boss_notice":
+            is_ghz = await Mg.query.where(
+                (Mg.ghz == True) & (Mg.gid == 145029700)
+            ).gino.first()
+            if is_ghz == None:
+                continue
         if key in NOUPDATE or "pixiv" in key:
             continue
         asyncio.run_coroutine_threadsafe(

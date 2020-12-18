@@ -55,7 +55,7 @@ qieqie = on_command("切噜一下")
 
 @qieqie.handle()
 async def cherulize(bot: Bot, event: Event, state: dict):
-    s = event.plain_text
+    s = event.raw_message
     if len(s) > 500:
         await qieqie.finish("切、切噜太长切不动勒切噜噜...", at_sender=True)
     await qieqie.send("切噜～♪" + str2cheru(s))
@@ -66,7 +66,7 @@ deqieqie = on_startswith("切噜～♪")
 
 @deqieqie.handle()
 async def decherulize(bot: Bot, event: Event, state: dict):
-    s = event.plain_text
+    s = event.raw_message
     if len(s) > 1501:
         await deqieqie.finish("切、切噜太长切不动勒切噜噜...", at_sender=True)
     msg = "的切噜噜是：\n" + escape(cheru2str(s)[3:])

@@ -9,7 +9,7 @@ url = r"https://lab.magiconch.com/api/nbnhhsh/guess"
 
 @hhsh.handle()
 async def firsthandle(bot: Bot, event: Event, state: dict):
-    argv = event.plain_text.split(" ")
+    argv = event.raw_message.split(" ")
     for i in argv:
         res = await query(bot, i)
         for j in res:

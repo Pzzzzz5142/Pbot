@@ -166,16 +166,24 @@ async def ascii2d(bot: Bot, purl: str):
         content = await resp.read()
         sp = BeautifulSoup(content, "lxml")
 
-        res = sp.find_all("div", class_="row item-box")[1]
+        res = sp.find_all("div", class_="row item-box")
 
-        thumbnail = cq.image(ascii2dUrl + res.find("img", loading="lazy")["src"])
-        h6 = res.find("h6")
-        if h6:
-            title, author = [i.text for i in h6.find_all("a")]
-            source = h6.find("a")["href"]
-            site = h6.find("small").text.strip()
-        else:
+        title, source = None, None
+        flg = 1
+        for item in res:
+            if flg == 1:
+                flg = 0
+                continue
+            thumbnail = cq.image(ascii2dUrl + item.find("img", loading="lazy")["src"])
+            h6 = item.find("h6")
+            if h6:
+                title, author = [i.text for i in h6.find_all("a")]
+                source = h6.find("a")["href"]
+                site = h6.find("small").text.strip()
+                break
+        if title == None:
             title = author = source = site = "🈚️"
+            thumbnail = cq.image(purl)
         if "pixiv" in source:
             fd = re.search(r"/[0-9]+", source)
             _id = source[fd.start() + 1 : fd.end()]
