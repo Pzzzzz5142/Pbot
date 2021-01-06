@@ -39,9 +39,33 @@
 
 ### 安装 Pbot 本体
 
-*Working 中*
+安装的步骤主要是装依赖、装收消息的东西（mirai之类的，推荐用go-cqhttp），然后就可以跑了。
 
-### 安装数据库
+#### 安装收消息的东西
+
+现在收消息的东西很多，mirai、mirai-ok、go-cqhttp等等。因为 go-cqhttp 非常傻瓜无脑，一键安装，所以我就用的是他了。
+
+#### 安装依赖
+
+虽然 nonebot2 本身就是使用poetry管理环境，但是我用 poetry 总有点奇奇怪怪的问题，比如 nb2 本来装的是 a6，一复现环境就搞成 a7 了、lxml 装不上等等问题，所以我直接 pip 了。
+
++ `clone` 本仓库并切到该文件夹：
+
+    `git clone xxx && cd Pbot`
+
++ （可选）创建虚拟 python 环境并激活：
+
+    `pip create`
+
++ 安装依赖：
+
+    `pip install -r requirments.txt`
+
+#### 跑！
+
+跑就好了。但是你得先配置才能开启所有功能。
+
+#### （可选）安装数据库
 
 由于本 bot 使用的是一个异步框架，同时由于 sqlite 本身不支持异步的操作（~~或者说我没找到~~）。因此涉及到持久化的功能都使用到了 postgreSQL 数据库。
 
