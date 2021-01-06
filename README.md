@@ -51,7 +51,7 @@
 
 + `clone` 本仓库并切到该文件夹：
 
-    `git clone xxx && cd Pbot`
+    `git clone https://github.com/Pzzzzz5142/Pbot.git && cd Pbot`
 
 + （可选）创建虚拟 python 环境并激活：
 
