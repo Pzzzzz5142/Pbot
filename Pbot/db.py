@@ -5,13 +5,12 @@ import nonebot, aiohttp
 db = Gino()
 
 
-async def init() -> None:
+async def init_db() -> None:
     """
     Initialize database module.
     """
     config = nonebot.get_driver().config
-    config.session = aiohttp.ClientSession()
-    config = nonebot.get_driver().config
+    config.session = aiohttp.ClientSession()    
     logger.debug("Initializing database")
     if getattr(config, "db_dsn", None):
         await db.set_bind(config.db_dsn)

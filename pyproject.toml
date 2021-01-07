@@ -7,16 +7,17 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.7"
-nonebot2 = "^2.0.0.a1"
-nb-cli = "^0.1.0"
-gino = "^1.0.1"
 alembic = "^1.4.3"
-psycopg2 = "^2.8.6"
 feedparser = "^6.0.2"
 bs4 = "^0.0.1"
-lxml = "^4.6.1"
+lxml = "^4.6.2"
 langdetect = "^1.0.8"
 pixivpy-async = "^1.2.11"
+nonebot2 = "2.0.0a7"
+nb-cli = "0.3.0"
+gino = {version = "^1.0.1", optional = true}
+nonebot-plugin-apscheduler = "^0.1.0"
+PixivPy = "^3.5.10"
 
 [tool.poetry.dev-dependencies]
 nonebot-test = "^0.1.0"
@@ -24,3 +25,6 @@ nonebot-test = "^0.1.0"
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
+
+[tool.poetry.extras]
+db = ["gino"]

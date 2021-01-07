@@ -47,19 +47,21 @@
 
 #### 安装依赖
 
-虽然 nonebot2 本身就是使用poetry管理环境，但是我用 poetry 总有点奇奇怪怪的问题，比如 nb2 本来装的是 a6，一复现环境就搞成 a7 了、lxml 装不上等等问题，所以我直接 pip 了。
+由于 nonebot2 本身就是使用poetry管理环境，因此这里也同样使用 poetry 管理环境。
 
 + `clone` 本仓库并切到该文件夹：
 
     `git clone https://github.com/Pzzzzz5142/Pbot.git && cd Pbot`
 
-+ （可选）创建虚拟 python 环境并激活：
++ 安装 poetry
 
-    `pip create`
+    `curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -`
 
 + 安装依赖：
 
-    `pip install -r requirments.txt`
+    `poetry install`
+    
+    同时有可能会出现
 
 #### 跑！
 

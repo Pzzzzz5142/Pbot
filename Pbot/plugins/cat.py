@@ -1,6 +1,6 @@
 from nonebot import on_command
 from nonebot.adapters.cqhttp import Bot, Event
-from nonebot.permission import SUPERUSER
+from Pbot.utils import getPixivDetail
 import Pbot.cq as cq
 
 cat = on_command("cat", priority=1)
@@ -36,34 +36,31 @@ async def firsthandle(bot: Bot, event: Event, state: dict):
 
 
 async def catPixiv(bot: Bot, _id: int, p=None, **kwargs):
-    parm = {"id": _id}
-    async with bot.config.session.get(
-        "https://api.imjad.cn/pixiv/v2/", params=parm
-    ) as resp:
-        if resp.status != 200:
-            return ["网络错误哦！{}".format(resp.status)]
-        ShitJson = await resp.json()
-        total = ShitJson["illust"]["page_count"]
-        if p != None:
-            if p == "*":
-                if total > 1:
-                    return ["这是一个有多页的pid！"] + [
-                        cq.image("https://pixiv.cat/{}-{}.jpg".format(_id, i))
-                        for i in range(1, total + 1)
-                    ]
-                else:
-                    return [cq.image("https://pixiv.cat/{}.jpg".format(_id))]
-            elif p > 0 and p <= total:
-                return [
-                    cq.image(
-                        "https://pixiv.cat/{}-{}.jpg".format(_id, p)
-                        if total > 1
-                        else "https://pixiv.cat/{}.jpg".format(_id)
-                    )
+    ShitJson = await getPixivDetail(bot.config.session, _id)
+    try:
+        total = ShitJson["page_count"]
+    except:
+        return [ShitJson]
+    if p != None:
+        if p == "*":
+            if total > 1:
+                return ["这是一个有多页的pid！"] + [
+                    cq.image("https://pixiv.cat/{}-{}.jpg".format(_id, i))
+                    for i in range(1, total + 1)
                 ]
             else:
-                return ["页数不对哦~~ 这个 id 只有 {} 页".format(total)]
-        if total > 1:
-            return ["这是一个有多页的pid！", cq.image("https://pixiv.cat/{}-1.jpg".format(_id))]
+                return [cq.image("https://pixiv.cat/{}.jpg".format(_id))]
+        elif p > 0 and p <= total:
+            return [
+                cq.image(
+                    "https://pixiv.cat/{}-{}.jpg".format(_id, p)
+                    if total > 1
+                    else "https://pixiv.cat/{}.jpg".format(_id)
+                )
+            ]
         else:
-            return [cq.image("https://pixiv.cat/{}.jpg".format(_id))]
+            return ["页数不对哦~~ 这个 id 只有 {} 页".format(total)]
+    if total > 1:
+        return ["这是一个有多页的pid！", cq.image("https://pixiv.cat/{}-1.jpg".format(_id))]
+    else:
+        return [cq.image("https://pixiv.cat/{}.jpg".format(_id))]

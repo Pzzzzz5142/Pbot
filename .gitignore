@@ -146,4 +146,7 @@ dmypy.json
 alembic.ini
 migrations/versions/
 
+# Some other thing
+a.txt
+
 # End of https://www.toptal.com/developers/gitignore/api/python

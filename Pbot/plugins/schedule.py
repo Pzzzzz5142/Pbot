@@ -1,8 +1,9 @@
 from Pbot.db import Mg
 from nonebot.exception import ActionFailed, ApiNotAvailable, NetworkError, RequestDenied
 from Pbot.db import Backup
-from Pbot.utils import get_bot
+from Pbot.utils import get_bot, run_sync_fun
 from nonebot import require
+from Pbot.pixiv import pixiv_login
 
 scheduler = require("nonebot_plugin_apscheduler").scheduler
 
@@ -29,3 +30,7 @@ async def backup():
     for item in ls:
         await Backup.create(qid=item["user_id"], card=item["card"], role=item["role"])
 
+
+@scheduler.scheduled_job("interval", hours=1)
+async def pixiv_log():
+    await run_sync_fun(pixiv_login)

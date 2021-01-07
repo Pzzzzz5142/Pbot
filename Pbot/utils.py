@@ -1,8 +1,9 @@
 import asyncio
 import os
-from random import randint
+from functools import partial
 from aiohttp import ClientSession
 import re, random, datetime
+from Pbot.pixiv import pixiv_api
 
 from nonebot.adapters.cqhttp import Bot
 import Pbot.cq as cq
@@ -32,8 +33,14 @@ doc = {
     "pixiv_day_male_r18": "Pixiv 每日热榜 男性向 R-18",
     "pixiv_day_female_r18": "Pixiv 每日热榜 女性向 R-18",
     "pixiv_week_r18g": "Pixiv 每周热榜 R18g",
-    "stz": "涩图bot",
-    "boss_notice": "会战boss提醒",
+    # "stz": "涩图bot",
+    # "boss_notice": "会战boss提醒",
+}
+
+headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.79 Safari/537.36",
+    "Authorization": "",
+    "Referer": "https://pixivic.com/",
 }
 
 
@@ -138,7 +145,7 @@ async def getSetuHigh(
 ) -> str:
     random.seed(datetime.datetime.now())
     LoliUrl = r"https://api.lolicon.app/setu/"
-    parm = {"apikey": None, "r18": "1", "size1200": "true", "num": 10}
+    parm = {"apikey": None, "r18": "1", "size1200": "true", "num": 2}
     if keyword != "":
         parm["keyword"] = keyword
     if r18:
@@ -243,18 +250,21 @@ async def cksafe(gid: int):
 
 
 async def getPixivDetail(session: ClientSession, _id):
-    api = r"https://api.imjad.cn/pixiv/v2/"
-    parm = {"id": _id}
-    async with session.get(api, params=parm) as resp:
-        if resp.status != 200:
-            raise Exception
-        ShitJson = await resp.json()
-        return transform(ShitJson)
+    ShitJson = await run_sync_fun(pixiv_api, "illust_detail", _id)
+    return transform(ShitJson)
+
+
+async def run_sync_fun(fun, *args, **kwargs):
+    return await asyncio.get_event_loop().run_in_executor(
+        None, partial(fun, *args, **kwargs)
+    )
 
 
 def transform(data):
     if not isinstance(data, dict):
         return data
+    if 'error' in data:
+        return data['error']['user_message']
     if data["illust"]:
         data = data["illust"]
     return {
@@ -262,5 +272,6 @@ def transform(data):
         "pid": data["id"],
         "tags": ["#" + i["name"] for i in data["tags"]],
         "title": data["title"],
+        "page_count": data["page_count"],
     }
 

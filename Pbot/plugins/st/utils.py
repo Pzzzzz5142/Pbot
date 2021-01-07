@@ -28,6 +28,11 @@ async def searchPic(bot: Bot, key_word: str, maxSanityLevel: int = 4):
         "illustType": "illust",
         "maxSanityLevel": maxSanityLevel,
     }
+    if headers["Authorization"] == "" and os.path.exists(
+        os.path.join(os.path.dirname(__file__), "a.txt")
+    ):
+        with open(os.path.join(os.path.dirname(__file__), "a.txt"), "r") as fl:
+            headers["Authorization"] = fl.read()
     async with bot.config.session.get(
         pixivicurl + "illustrations", params=datas, headers=headers
     ) as resp:
@@ -44,9 +49,7 @@ async def searchPic(bot: Bot, key_word: str, maxSanityLevel: int = 4):
         while len(Good) != 0:
             pic = random.choice(ShitJson["data"])
             res = await getImage(
-                bot.config.session,
-                imageProxy(pic["imageUrls"][0]["large"], "img.cheerfun.dev"),
-                headers=headers,
+                bot.config.session, imageProxy(pic["imageUrls"][0]["large"])
             )
             if "失败" in res:
                 if "404" in res:
@@ -56,7 +59,7 @@ async def searchPic(bot: Bot, key_word: str, maxSanityLevel: int = 4):
                     res = cq.image(imageProxy_cat(pic["imageUrls"][0]["large"]))
             _id = pic["id"]
             break
-    except:
+    except Exception as e:
         pass
     if _id == None:
         res = f"暂时没有 {key_word} 的结果哦～"
@@ -77,6 +80,8 @@ async def auth(bot: Bot, state: dict, **kwargs):
         file = open("/root/image/{}.jpg".format(state["img"].lower()), "wb")
         file.write(imgdata)
         file.close()
+        with open(os.path.join(os.path.dirname(__file__), "a.txt"), "w") as fl:
+            fl.write(headers["Authorization"])
         return "ok"
 
 

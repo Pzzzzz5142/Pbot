@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import nonebot
-from Pbot.db import init
+from Pbot.db import init_db
+from Pbot.pixiv import pixiv_login
 from nonebot.adapters.cqhttp import Bot as CQHTTPBot
 
 # Custom your logger
@@ -20,7 +21,8 @@ app = nonebot.get_asgi()
 
 driver = nonebot.get_driver()
 driver.register_adapter("cqhttp", CQHTTPBot)
-driver.on_startup(init)
+driver.on_startup(init_db)
+pixiv_login()
 
 nonebot.load_plugin("nonebot_plugin_apscheduler")
 nonebot.load_plugins("Pbot/plugins")
