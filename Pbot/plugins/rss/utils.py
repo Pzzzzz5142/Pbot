@@ -116,7 +116,7 @@ async def sendrss(
             (Sub.qid == qid) & (Sub.rss == source)
         ).gino.first()
         if value == None:
-            value = await Rss.query.where(Rss.id == source).gino.all()
+            value = await Rss.query.where(Rss.id == source).gino.first()
             qdt = value.pre
         else:
             qdt = value.dt

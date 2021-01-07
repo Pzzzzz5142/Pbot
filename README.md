@@ -55,14 +55,12 @@
 
 + 安装 poetry
 
-    `curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -`
+    你喜欢怎么装就怎么装
 
 + 安装依赖：
 
     `poetry install`
     
-    同时有可能会出现
-
 #### 跑！
 
 跑就好了。但是你得先配置才能开启所有功能。
