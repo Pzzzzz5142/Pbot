@@ -4,6 +4,7 @@ from functools import partial
 from aiohttp import ClientSession
 import re, random, datetime
 from Pbot.pixiv import pixiv_api
+import aiohttp
 
 from nonebot.adapters.cqhttp import Bot
 import Pbot.cq as cq
@@ -43,6 +44,10 @@ headers = {
     "Referer": "https://pixivic.com/",
 }
 
+
+async def init():
+    config = nonebot.get_driver().config
+    config.session = aiohttp.ClientSession()  
 
 def imageProxy(url: str, prox: str = "pximg.pixiv-viewer.workers.dev") -> str:
     result = url.replace("i.pximg.net", prox)

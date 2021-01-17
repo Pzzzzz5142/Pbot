@@ -3,8 +3,11 @@
 
 import nonebot
 from Pbot.db import init_db
+from Pbot.utils import init
 from Pbot.pixiv import pixiv_login
 from nonebot.adapters.cqhttp import Bot as CQHTTPBot
+from pkg_resources import DistributionNotFound,get_distribution
+from nonebot.log import logger
 
 # Custom your logger
 #
@@ -21,7 +24,13 @@ app = nonebot.get_asgi()
 
 driver = nonebot.get_driver()
 driver.register_adapter("cqhttp", CQHTTPBot)
-driver.on_startup(init_db)
+
+try:
+    get_distribution("gino")
+    driver.on_startup(init_db)
+except DistributionNotFound:
+    logger.info('No database found. Bypassing init databse')
+driver.on_startup(init)
 pixiv_login()
 
 nonebot.load_plugin("nonebot_plugin_apscheduler")

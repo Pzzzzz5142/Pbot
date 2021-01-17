@@ -10,7 +10,6 @@ async def init_db() -> None:
     Initialize database module.
     """
     config = nonebot.get_driver().config
-    config.session = aiohttp.ClientSession()    
     logger.debug("Initializing database")
     if getattr(config, "db_dsn", None):
         await db.set_bind(config.db_dsn)
@@ -78,4 +77,3 @@ class Hold(db.Model):
     qid = db.Column(db.ForeignKey("acc.qid"), primary_key=True, nullable=False)
     stk = db.Column(db.String(10), primary_key=True, nullable=False)
     nums = db.Column(db.BigInteger, nullable=False)
-

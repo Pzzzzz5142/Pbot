@@ -1,6 +1,6 @@
 from nonebot import on_command
 from nonebot.adapters.cqhttp import Bot, Event
-from Pbot.utils import getPixivDetail
+from Pbot.utils import getPixivDetail, getImage
 import Pbot.cq as cq
 
 cat = on_command("cat", priority=1)
@@ -29,7 +29,12 @@ async def firsthandle(bot: Bot, event: Event, state: dict):
         await cat.finish("页码不对哦~~页码从0开始。。")
     await cat.send(cq.reply(event.id) + "尝试发送中，。，。，。")
     pics = await catPixiv(bot, _id, p)
-    for pic in pics:
+    for ind, pic in enumerate(pics):
+        if pic[0] == "h":
+            try:
+                pic = await getImage(bot.config.session, pic)
+            except:
+                await cat.send("第 {} 页发送失败了。。但是已经缓存。。尝试重发可能可行！".format(ind))
         await cat.send(pic)
     if len(pics) > 2:
         await cat.finish("发送完毕！")
@@ -44,23 +49,21 @@ async def catPixiv(bot: Bot, _id: int, p=None, **kwargs):
     if p != None:
         if p == "*":
             if total > 1:
-                return ["这是一个有多页的pid！"] + [
-                    cq.image("https://pixiv.cat/{}-{}.jpg".format(_id, i))
+                return ["这是一个有 {} 页的pid！".format(total)] + [
+                    "https://pixiv.cat/{}-{}.jpg".format(_id, i)
                     for i in range(1, total + 1)
                 ]
             else:
                 return [cq.image("https://pixiv.cat/{}.jpg".format(_id))]
         elif p > 0 and p <= total:
             return [
-                cq.image(
-                    "https://pixiv.cat/{}-{}.jpg".format(_id, p)
-                    if total > 1
-                    else "https://pixiv.cat/{}.jpg".format(_id)
-                )
+                "https://pixiv.cat/{}-{}.jpg".format(_id, p)
+                if total > 1
+                else "https://pixiv.cat/{}.jpg".format(_id)
             ]
         else:
             return ["页数不对哦~~ 这个 id 只有 {} 页".format(total)]
     if total > 1:
-        return ["这是一个有多页的pid！", cq.image("https://pixiv.cat/{}-1.jpg".format(_id))]
+        return ["这是一个有多页的pid！", "https://pixiv.cat/{}-1.jpg".format(_id)]
     else:
-        return [cq.image("https://pixiv.cat/{}.jpg".format(_id))]
+        return ["https://pixiv.cat/{}.jpg".format(_id)]
