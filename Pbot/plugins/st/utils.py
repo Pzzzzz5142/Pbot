@@ -1,7 +1,6 @@
 from nonebot.adapters.cqhttp import Bot
 import random, base64, re
 
-from pydantic.types import NoneBytes
 from Pbot.utils import *
 import Pbot.cq as cq
 from bs4 import BeautifulSoup
@@ -86,7 +85,13 @@ async def auth(bot: Bot, state: dict, **kwargs):
 
 
 async def sauce(bot: Bot, purl: str) -> str:
-    parm = {"db": "999", "output_type": "2", "numres": "3", "url": None}
+    parm = {
+        "db": "999",
+        "output_type": "2",
+        "numres": "3",
+        "url": None,
+        "api_key": bot.config.saucekey,
+    }
     parm["url"] = purl
 
     async with bot.config.session.get(sauceUrl, params=parm, headers=headers) as resp:
