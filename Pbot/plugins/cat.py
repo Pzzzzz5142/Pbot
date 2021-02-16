@@ -30,7 +30,7 @@ async def firsthandle(bot: Bot, event: Event, state: dict):
     await cat.send(cq.reply(event.id) + "尝试发送中，。，。，。")
     pics = await catPixiv(bot, _id, p)
     for ind, pic in enumerate(pics):
-        if pic[0] == "h":
+        if len(pic)>0 and pic[0] == "h":
             try:
                 pic = await getImage(bot.config.session, pic)
             except:

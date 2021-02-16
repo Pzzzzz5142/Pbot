@@ -31,7 +31,7 @@ try:
 except DistributionNotFound:
     logger.info('No database found. Bypassing init databse')
 driver.on_startup(init)
-pixiv_login()
+#pixiv_login()
 
 nonebot.load_plugin("nonebot_plugin_apscheduler")
 nonebot.load_plugins("Pbot/plugins")

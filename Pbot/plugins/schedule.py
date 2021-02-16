@@ -4,6 +4,7 @@ from Pbot.db import Backup
 from Pbot.utils import get_bot, run_sync_fun
 from nonebot import require
 from Pbot.pixiv import pixiv_login
+import Pbot.cq as cq
 
 scheduler = require("nonebot_plugin_apscheduler").scheduler
 
@@ -34,3 +35,15 @@ async def backup():
 @scheduler.scheduled_job("interval", hours=1)
 async def pixiv_log():
     await run_sync_fun(pixiv_login)
+
+
+@scheduler.scheduled_job("cron", hour="14", minute="0")
+async def backup():
+    bot = get_bot()
+    await bot.send_group_msg(
+        group_id=383647564,
+        message=cq.at("all")
+        + """٩( °༥° )و ₎₎能动手就别吵吵
+开始击剑了，兄弟萌！！淦死野人！！"""
+        + cq.image("a.gif"),
+    )
