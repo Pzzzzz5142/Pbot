@@ -14,6 +14,7 @@ async def sst(bot: Bot, event: Event, state: dict):
     msg = str(event.message).strip()
     if event.detail_type == "group":
         safe = await cksafe(event.group_id)
+        print(safe)
     else:
         safe = False
     if ("r18" in msg or "R18" in msg) and not safe:
@@ -36,7 +37,8 @@ async def sst(bot: Bot, event: Event, state: dict):
             data["pid"], data["title"], data["author"], "、".join(data["tags"])
         )
     await setu.send(
-        text, at_sender=True,
+        text,
+        at_sender=True,
     )
     try:
         await setu.send(pic)
@@ -58,7 +60,7 @@ stCome = on_message(rule=ckimg("b407f708a2c6a506342098df7cac4a57.image"))
 @stCome.handle()
 async def pre(bot: Bot, event: Event, state: dict):
     r18 = False
-    if event.group_id == 145029700:
+    if event.group_id in [145029700, 1003259896]:
         hour = datetime.today().hour
         r18 = hour <= 7 or hour >= 22
     if event.group_id == 1037557679:

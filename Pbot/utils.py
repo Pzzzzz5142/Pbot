@@ -5,6 +5,7 @@ from aiohttp import ClientSession
 import re, random, datetime
 from Pbot.pixiv import pixiv_api
 import aiohttp
+from .db import Mg
 
 from nonebot.adapters.cqhttp import Bot
 import Pbot.cq as cq
@@ -47,7 +48,8 @@ headers = {
 
 async def init():
     config = nonebot.get_driver().config
-    config.session = aiohttp.ClientSession()  
+    config.session = aiohttp.ClientSession()
+
 
 def imageProxy(url: str, prox: str = "pximg.pixiv-viewer.workers.dev") -> str:
     result = url.replace("i.pximg.net", prox)
@@ -220,7 +222,9 @@ async def getSetuHigh(
         for item in ShitJson["data"]:
             asyncio.run_coroutine_threadsafe(
                 getImage(
-                    bot.config.session, item["url"], f"pixiv{'/r18' if r18 else '/'}",
+                    bot.config.session,
+                    item["url"],
+                    f"pixiv{'/r18' if r18 else '/'}",
                 ),
                 loop,
             )
@@ -249,9 +253,8 @@ async def handleOverCall(bot: Bot, api, r18, ShitJson: dict = None, now=None):
 
 
 async def cksafe(gid: int):
-    if gid == 145029700:
-        return False
-    return True
+    value = await Mg.query.where(Mg.gid == gid).gino.first()
+    return value.safe
 
 
 async def getPixivDetail(session: ClientSession, _id):
@@ -268,8 +271,8 @@ async def run_sync_fun(fun, *args, **kwargs):
 def transform(data):
     if not isinstance(data, dict):
         return data
-    if 'error' in data:
-        return data['error']['user_message']
+    if "error" in data:
+        return data["error"]["user_message"]
     if data["illust"]:
         data = data["illust"]
     return {
@@ -279,4 +282,3 @@ def transform(data):
         "title": data["title"],
         "page_count": data["page_count"],
     }
-

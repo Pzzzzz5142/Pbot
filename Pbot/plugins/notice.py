@@ -12,7 +12,7 @@ helloNew = on_notice()
 async def firsthandle(bot: Bot, event: Event, state: dict):
     if event.sub_type == "poke" and event.raw_event["target_id"] == 3418961367:
         r18 = False
-        if event.group_id == 145029700:
+        if event.group_id in [145029700, 1003259896]:
             hour = datetime.today().hour
             r18 = hour <= 7 or hour >= 22
         if event.group_id == 1037557679:
