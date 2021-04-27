@@ -9,6 +9,7 @@ import Pbot.cq as cq
 from .models import *
 import asyncio
 from nonebot import require
+import nonebot
 
 scheduler = require("nonebot_plugin_apscheduler").scheduler
 
@@ -21,7 +22,8 @@ FULLTEXT = ["pprice", "stz", "boss_notice"]
 
 @scheduler.scheduled_job("interval", minutes=20)
 async def _():
-    bot = get_bot()
+    bots = nonebot.get_bots()
+    
     loop = asyncio.get_event_loop()
     values = await Mg.query.where(Mg.rss == True).gino.all()
     values = [int(item.gid) for item in values]
@@ -34,7 +36,8 @@ async def _():
                 continue
         if key in NOUPDATE or "pixiv" in key:
             continue
-        asyncio.run_coroutine_threadsafe(
+        for bot in bots:
+            asyncio.run_coroutine_threadsafe(
             handlerss(
                 bot, key, gtfun(key), key not in NOBROADCAST, key in FULLTEXT, values,
             ),
