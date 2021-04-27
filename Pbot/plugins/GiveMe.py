@@ -59,13 +59,10 @@ stCome = on_message(rule=ckimg("b407f708a2c6a506342098df7cac4a57.image"))
 
 @stCome.handle()
 async def pre(bot: Bot, event: Event, state: dict):
-    r18 = False
-    if event.group_id in [145029700, 1003259896]:
-        hour = datetime.today().hour
-        r18 = hour <= 7 or hour >= 22
-    if event.group_id == 1037557679:
-        r18 = True
-    x, err = await getSetuHigh(bot, r18)
+    safe = await cksafe(event.group_id)
+    if event.group_id in [145029700, 1003259896,1037557679]:
+        safe= False 
+    x, err = await getSetuHigh(bot, not safe)
     if x == None:
         await stCome.finish(err)
     try:

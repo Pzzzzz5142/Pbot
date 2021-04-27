@@ -32,11 +32,6 @@ async def backup():
         await Backup.create(qid=item["user_id"], card=item["card"], role=item["role"])
 
 
-@scheduler.scheduled_job("interval", hours=1)
-async def pixiv_log():
-    await run_sync_fun(pixiv_login)
-
-
 @scheduler.scheduled_job("cron", hour="14", minute="0")
 async def backup():
     bot = get_bot()

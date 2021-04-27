@@ -30,7 +30,7 @@ async def firsthandle(bot: Bot, event: Event, state: dict):
     await cat.send(cq.reply(event.id) + "尝试发送中，。，。，。")
     pics = await catPixiv(bot, _id, p)
     for ind, pic in enumerate(pics):
-        if len(pic)>0 and pic[0] == "h":
+        if len(pic) > 0 and pic[0] == "h":
             try:
                 pic = await getImage(bot.config.session, pic)
             except:
@@ -41,11 +41,18 @@ async def firsthandle(bot: Bot, event: Event, state: dict):
 
 
 async def catPixiv(bot: Bot, _id: int, p=None, **kwargs):
-    ShitJson = await getPixivDetail(bot.config.session, _id)
-    try:
+    data = {"p": _id}
+    async with bot.config.session.post(
+        "https://api.pixiv.cat/v1/generate", json=data
+    ) as resp:
+        if resp.status != 200:
+            return ["网络错误：" + str(resp.status)]
+        ShitJson = await resp.json()
+        if ShitJson["success"]:
+            total = len(ShitJson["original_url"]) if ShitJson["multiple"] else 1
+        else:
+            return [ShitJson["error"]]
         total = ShitJson["page_count"]
-    except:
-        return [ShitJson]
     if p != None:
         if p == "*":
             if total > 1:

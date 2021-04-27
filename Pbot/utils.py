@@ -16,7 +16,7 @@ import os.path as path
 import json
 
 doc = {
-    "mrfz": "明日方舟",
+    # "mrfz": "明日方舟",
     "bcr": "公主连接 B服",
     "loli": "忧郁的loli",
     "pprice": "每日生猪价格",

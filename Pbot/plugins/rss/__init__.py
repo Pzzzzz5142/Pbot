@@ -19,7 +19,7 @@ NOBROADCAST = ["gcores"]
 FULLTEXT = ["pprice", "stz", "boss_notice"]
 
 
-@scheduler.scheduled_job("interval", minutes=10)
+@scheduler.scheduled_job("interval", minutes=20)
 async def _():
     bot = get_bot()
     loop = asyncio.get_event_loop()
