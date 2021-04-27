@@ -84,7 +84,7 @@ async def getImage(session: ClientSession, url: str, dir: str = "", **kwargs):
         with open(nonebot.get_driver().config.imgpath + pic, "wb") as fl:
             fl.write(img)
         logger.info("已保存图片{}".format(pic))
-        return cq.image(pic)
+        return cq.image('file://'+nonebot.get_driver().config.imgpath +pic)
 
 
 def hourse(url: str) -> str:

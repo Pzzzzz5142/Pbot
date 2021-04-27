@@ -1,6 +1,6 @@
 from nonebot import on_notice
 from nonebot.adapters.cqhttp import Bot, Event, unescape
-from Pbot.utils import getSetuHigh,cksafe
+from Pbot.utils import getSetuHigh, cksafe
 from datetime import datetime
 import Pbot.cq as cq
 
@@ -10,7 +10,10 @@ helloNew = on_notice()
 
 @poke.handle()
 async def firsthandle(bot: Bot, event: Event, state: dict):
-    if event.sub_type == "poke" and event.raw_event["target_id"] == 3418961367:
+    if event.sub_type == "poke" and event.raw_event["target_id"] in [
+        3418961367,
+        2145919330,
+    ]:
         r18 = not await cksafe(event.group_id)
         if event.group_id in [145029700, 1003259896]:
             hour = datetime.today().hour
