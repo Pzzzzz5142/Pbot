@@ -13,6 +13,8 @@ async def firsthandle(bot: Bot, event: Event, state: dict):
     if event.sub_type == "poke" and event.raw_event["target_id"] in [
         3418961367,
         2145919330,
+        2167073315,
+        3428325075,
     ]:
         r18 = not await cksafe(event.group_id)
         if event.group_id in [145029700, 1003259896]:

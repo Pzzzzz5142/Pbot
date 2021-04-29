@@ -49,10 +49,9 @@ async def catPixiv(bot: Bot, _id: int, p=None, **kwargs):
             return ["网络错误：" + str(resp.status)]
         ShitJson = await resp.json()
         if ShitJson["success"]:
-            total = len(ShitJson["original_url"]) if ShitJson["multiple"] else 1
+            total = len(ShitJson["original_urls"]) if ShitJson["multiple"] else 1
         else:
             return [ShitJson["error"]]
-        total = ShitJson["page_count"]
     if p != None:
         if p == "*":
             if total > 1:

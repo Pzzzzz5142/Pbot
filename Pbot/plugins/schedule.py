@@ -33,16 +33,3 @@ async def backup():
         await Backup.delete.gino.all()
         for item in ls:
             await Backup.create(qid=item["user_id"], card=item["card"], role=item["role"])
-
-
-@scheduler.scheduled_job("cron", hour="14", minute="0")
-async def backup():
-    bots = nonebot.get_bots()
-    for bot in bots:
-        await bot.send_group_msg(
-            group_id=383647564,
-            message=cq.at("all")
-            + """٩( °༥° )و ₎₎能动手就别吵吵
-    开始击剑了，兄弟萌！！淦死野人！！"""
-            + cq.image("a.gif"),
-        )
