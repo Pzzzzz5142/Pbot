@@ -22,6 +22,9 @@ def music(tp: str, _id: str):
     return f"[CQ:music,type={tp},id={_id}]"
 
 
+def record(file: str):
+    return f"[CQ:record,file=file:///{file}]"
+
+
 def js(jsstr: str):
     return f"[CQ:json,data={jsstr}]"
-

@@ -79,12 +79,7 @@ async def handlerss(
                             if is_fullText
                             else preview + f"\n\n回复 rss {source} 获取详细信息",
                         )
-                except (
-                    RequestDenied,
-                    ApiNotAvailable,
-                    NetworkError,
-                    ActionFailed,
-                ) as e:
+                except :
                     pass
 
     Suber = await Sub.query.where(Sub.rss == source).gino.all()

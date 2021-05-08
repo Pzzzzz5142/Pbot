@@ -1,4 +1,6 @@
 from logging.config import fileConfig
+import sys
+sys.path.append('/root/Pbot')
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool

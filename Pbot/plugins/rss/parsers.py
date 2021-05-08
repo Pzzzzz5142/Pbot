@@ -2,11 +2,7 @@ import asyncio
 import re
 from datetime import datetime, timedelta
 
-from nonebot.log import logger
-
 import Pbot.cq as cq
-from Pbot.db import Mg
-from Pbot.utils import get_bot
 import feedparser as fp
 import nonebot
 import pytz

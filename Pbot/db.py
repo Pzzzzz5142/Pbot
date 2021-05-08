@@ -58,6 +58,7 @@ class Quser(db.Model):
     qid = db.Column(db.BigInteger, primary_key=True)
     swid = db.Column(db.CHAR(12))
     noteind = db.Column(db.Integer, nullable=False, server_default=db.text("0"))
+    level = db.Column(db.Integer)
 
 
 class Datou(db.Model):

@@ -22,8 +22,8 @@ FULLTEXT = ["pprice", "stz", "boss_notice"]
 
 @scheduler.scheduled_job("interval", minutes=20)
 async def _():
-    bots = nonebot.get_bots()
-    
+    bots = nonebot.get_bots().values()
+
     loop = asyncio.get_event_loop()
     values = await Mg.query.where(Mg.rss == True).gino.all()
     values = [int(item.gid) for item in values]
@@ -38,11 +38,16 @@ async def _():
             continue
         for bot in bots:
             asyncio.run_coroutine_threadsafe(
-            handlerss(
-                bot, key, gtfun(key), key not in NOBROADCAST, key in FULLTEXT, values,
-            ),
-            loop,
-        )
+                handlerss(
+                    bot,
+                    key,
+                    gtfun(key),
+                    key not in NOBROADCAST,
+                    key in FULLTEXT,
+                    values,
+                ),
+                loop,
+            )
 
 
 @rss.handle()
@@ -125,7 +130,13 @@ async def firstHandle(bot: Bot, event: Event, state: dict):
     elif "route" in state:
         for rt in state["ls"]:
             resp = await sendrss(
-                event.user_id, bot, "自定义路由", None, getrss, (1, 1), route=rt,
+                event.user_id,
+                bot,
+                "自定义路由",
+                None,
+                getrss,
+                (1, 1),
+                route=rt,
             )
             if resp and event.detail_type != "private":
                 await rss.send(unescape(cq.at(event.user_id) + f"「{rt}」的资讯已私信，请查收。"))
@@ -202,7 +213,12 @@ async def firsthandle(bot: Bot, event: Event, state: dict):
             continue
         asyncio.run_coroutine_threadsafe(
             handlerss(
-                bot, key, gtfun(key), key not in NOBROADCAST, key in FULLTEXT, values,
+                bot,
+                key,
+                gtfun(key),
+                key not in NOBROADCAST,
+                key in FULLTEXT,
+                values,
             ),
             loop,
         )

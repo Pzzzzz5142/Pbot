@@ -19,6 +19,7 @@ gino = {version = "^1.0.1", optional = true}
 nonebot-plugin-apscheduler = "^0.1.0"
 PixivPy = "^3.5.10"
 aiohttp = "^3.7.3"
+psycopg2 = "^2.8.6"
 
 [tool.poetry.dev-dependencies]
 nonebot-test = "^0.1.0"

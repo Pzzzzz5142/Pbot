@@ -17,3 +17,4 @@ say = on_command("say", priority=1, permission=SUPERUSER)
 @say.handle()
 async def firsthandle(bot: Bot, event: Event, state: dict):
     await say.finish(unescape(str(event.message)))
+    pass

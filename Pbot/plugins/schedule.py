@@ -12,7 +12,7 @@ scheduler = require("nonebot_plugin_apscheduler").scheduler
 
 @scheduler.scheduled_job("cron", hour="5", minute="0")
 async def _():
-    bots = nonebot.get_bots()
+    bots = nonebot.get_bots().values()
     values = await Mg.query.where(Mg.morningcall == True).gino.all()
     for item in values:
         for bot in bots:
@@ -21,15 +21,20 @@ async def _():
                 await bot.send_group_msg(
                     group_id=int(item), message=f"Ciallo～(∠・ω< )⌒★，早上好。"
                 )
-            except (ActionFailed, ApiNotAvailable, NetworkError, RequestDenied):
+                break
+            except:
                 pass
 
 
 @scheduler.scheduled_job("cron", hour="0,6,12,18", minute="0")
 async def backup():
-    bots = nonebot.get_bots()
+    bots = nonebot.get_bots().values()
     for bot in bots:
-        ls = await bot.get_group_member_list(group_id=bot.config.group, self_id=3418961367)
+        ls = await bot.get_group_member_list(
+            group_id=bot.config.group, self_id=3418961367
+        )
         await Backup.delete.gino.all()
         for item in ls:
-            await Backup.create(qid=item["user_id"], card=item["card"], role=item["role"])
+            await Backup.create(
+                qid=item["user_id"], card=item["card"], role=item["role"]
+            )

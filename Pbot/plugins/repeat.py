@@ -9,6 +9,7 @@ tjmp = {}
 
 
 def sigmoid(num):
+    num //= 2
     if num < 1:
         return -1
     num -= 3
