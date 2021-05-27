@@ -4,11 +4,14 @@ from nonebot.message import handle_event
 from nonebot.adapters.cqhttp import Bot, Event, Message
 from nonebot.permission import SUPERUSER
 import asyncio
+
+from nonebot.plugin import Export, on_message
 from .models import MusicPoll
 from glob import glob
 from Pbot.db import Quser
 import random
 from Pbot.cq import record
+import base64
 
 dp = on_command("poll", priority=1)
 
@@ -145,3 +148,64 @@ async def commenthandle(bot: Bot, event: Event, state: dict):
     msg = str(event.message).strip()[:100]
     await state["db"].update(comment=msg).apply()
     await dp.finish("Ok，你的投票已经被记录！感谢参与！期待你的下次参与！")
+
+
+ck_dp = on_command("ck")
+
+
+@ck_dp.handle()
+async def _(bot: Bot, event: Event, state: dict):
+    val = await MusicPoll.query.where(MusicPoll.ind == 1).gino.all()
+    await ck_dp.send(f"共 {len(val)} 人投票")
+    val = await MusicPoll.query.gino.all()
+    await ck_dp.send(f"共 {len(val)} 票")
+    a = {"result": 0, "div2": 0, "base_remi": 0, "top5_div2": 0, "remi_cov": 0}
+    b = {"result": 0, "div2": 0, "base_remi": 0, "top5_div2": 0, "remi_cov": 0}
+    for item in val:
+        for key in a:
+            try:
+                lv = await Quser.query.where(Quser.qid == item.id).gino.first()
+                lv = 3 - lv.level
+                a[key] += getattr(item, key, 1)
+                if getattr(item, key, 1) == 5:
+                    b[key] += 1
+            except:
+                a[key] += 1
+
+    await ck_dp.send("\n".join([f"{i}: {j}" for i, j in a.items()]))
+    await ck_dp.send("\n".join([f"{i}: {j}" for i, j in b.items()]))
+
+
+com = on_command("作曲")
+
+
+@com.handle()
+async def compose_handle(bot: Bot, event: Event, state: dict):
+    try:
+        async with bot.config.sess.get("8.130.38.129:8000", param={"compose": True}) as resp:
+            if resp.status != 200:
+                raise Exception
+            ShitJson = await resp.json()
+            if ShitJson["success"]:
+                songdata = base64.b64decode(ShitJson["song"])
+                with open("tmp.mp3", "wb") as fl:
+                    fl.write(songdata)
+                song = "tmp.mp3"
+            else:
+                raise Exception
+    except:
+        songs = glob("/root/remi_cov_mp3/*")
+        song = random.choice(songs)
+
+    retry = 0
+    success = False
+    while retry < 5:
+        try:
+            await com.send(record(song))
+            success = True
+            break
+        except:
+            retry += 1
+            continue
+    if not success:
+        await com.send("歌曲发送失败了。。。")

@@ -107,10 +107,9 @@ async def sauce(bot: Bot, purl: str) -> str:
     except:
         murl = ""
 
-    return (
-        cq.image(ShitJson["results"][0]["header"]["thumbnail"])
-        + (
-            f"\n标题：{ShitJson['results'][0]['data']['title']}"
+    return cq.image(ShitJson["results"][0]["header"]["thumbnail"]), (
+        (
+            f"标题：{ShitJson['results'][0]['data']['title']}"
             if "title" in ShitJson["results"][0]["data"]
             else ""
         )

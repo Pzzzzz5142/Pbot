@@ -32,9 +32,21 @@ async def _(bot: Bot, event: Event, state: dict):
 @st.handle()
 async def _(bot: Bot, event: Event, state: dict):
     if "pic" in state:
-        res = await sauce(bot, state["pic"])
-        logger.debug(unescape(res))
-        await st.send(unescape(res))
+        pic, res = await sauce(bot, state["pic"])
+        try:
+            await st.send(unescape(pic + "\n" + res))
+        except:
+            await st.send("发送失败了。。。尝试不带缩略图的发送！")
+            try:
+                await st.send(res)
+            except:
+                await st.send("不带缩略图的也发送失败了。。。尝试使用ascii2d搜索！")
+                res = await ascii2d(bot, state["pic"])
+                try:
+                    await st.send(res)
+                except:
+                    await st.finish("ascii2d 发送也失败了。。。尝试私聊搜图可能可行！")
+                await st.finish()
         fd = re.search("[0-9]+\.[0-9]*%", res)
         per = float(res[fd.start() : fd.end() - 1])
         ther = 70
@@ -79,4 +91,3 @@ async def _(bot: Bot, event: Event, state: dict):
     res = await auth(bot, state, params=q, json=parm)
 
     await login.send(cq.reply(event.id) + "正确！" if "ok" == res else res)
-

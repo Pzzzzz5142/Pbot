@@ -74,7 +74,7 @@ async def getImage(session: ClientSession, url: str, dir: str = "", **kwargs):
     pic = dir + pic
     if path.exists(nonebot.get_driver().config.imgpath + pic):
         logger.info("发送缓存图片{}".format(pic))
-        return cq.image(pic)
+        return cq.image("file://" + nonebot.get_driver().config.imgpath + pic)
     async with session.get(url, **kwargs) as resp:
         if resp.status != 200:
             logger.error("下载图片失败，网络错误 {}。".format(resp.status))
@@ -84,7 +84,7 @@ async def getImage(session: ClientSession, url: str, dir: str = "", **kwargs):
         with open(nonebot.get_driver().config.imgpath + pic, "wb") as fl:
             fl.write(img)
         logger.info("已保存图片{}".format(pic))
-        return cq.image('file://'+nonebot.get_driver().config.imgpath +pic)
+        return cq.image("file://" + nonebot.get_driver().config.imgpath + pic)
 
 
 def hourse(url: str) -> str:

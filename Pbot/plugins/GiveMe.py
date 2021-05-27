@@ -14,7 +14,6 @@ async def sst(bot: Bot, event: Event, state: dict):
     msg = str(event.message).strip()
     if event.detail_type == "group":
         safe = await cksafe(event.group_id)
-        print(safe)
     else:
         safe = False
     if ("r18" in msg or "R18" in msg) and not safe:
@@ -36,14 +35,21 @@ async def sst(bot: Bot, event: Event, state: dict):
         text = """发送中，。，。，。\npixiv id:{}\ntitle:{}\n作者:{}\ntags:{}""".format(
             data["pid"], data["title"], data["author"], "、".join(data["tags"])
         )
-    await setu.send(
-        text,
-        at_sender=True,
-    )
     try:
-        await setu.send(pic)
+        await setu.send(
+            text,
+            at_sender=True,
+        )
     except:
-        pass
+        try:
+            await setu.send("呀，发送色图详情失败辣，。，")
+        except:
+            pass
+    try:
+        if pic != None:
+            await setu.send(pic)
+    except:
+        await setu.send("呀，发送失败辣，。，")
 
 
 act = on_command("act", priority=1)
@@ -59,9 +65,10 @@ stCome = on_message(rule=ckimg("b407f708a2c6a506342098df7cac4a57.image"))
 
 @stCome.handle()
 async def pre(bot: Bot, event: Event, state: dict):
-    safe = await cksafe(event.group_id)
-    if event.group_id in [145029700, 1003259896,1037557679]:
-        safe= False 
+    if event.detail_type == "group":
+        safe = await cksafe(event.group_id)
+    else:
+        safe = False
     x, err = await getSetuHigh(bot, not safe)
     if x == None:
         await stCome.finish(err)
