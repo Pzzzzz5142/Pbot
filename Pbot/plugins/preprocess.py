@@ -1,5 +1,6 @@
 from nonebot.message import event_preprocessor
 from nonebot.adapters.cqhttp import Bot, Event
+from nonebot.exception import IgnoredException
 
 
 @event_preprocessor
@@ -8,6 +9,12 @@ async def pre(bot: Bot, event: Event, state: dict):
         event.current_arg_images = [
             seg.data["url"] for seg in event.message if seg.type == "image"
         ]
+        if (
+            event.self_id == "3418961367"
+            and event.detail_type == "group"
+            and event.group_id == 145029700
+        ):
+            raise IgnoredException("该群有两个机器人")
 
 
 """

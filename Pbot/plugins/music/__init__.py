@@ -90,7 +90,6 @@ async def secondhandle(bot: Bot, event: Event, state: dict):
                     break
                 except:
                     retry += 1
-                    continue
             if not success:
                 await dp.send(f"第{s+1}首歌曲发送失败了。。。")
 
@@ -114,7 +113,7 @@ async def optionhandle(bot: Bot, event: Event, state: dict):
         if msg > 5 or msg < 1 or msg in state["used"]:
             raise Exception
     except:
-        await dp.reject("请以阿拉伯数字回复，切勿重复！或者回复 'e' 退出")
+        await dp.reject("请以阿拉伯数字回复自然数（范围1-5），切勿重复！或者回复 'e' 退出")
 
     if state["now"] == 5:
         val = await MusicPoll.query.where(MusicPoll.id == int(event.user_id)).gino.all()
@@ -182,7 +181,9 @@ com = on_command("作曲")
 @com.handle()
 async def compose_handle(bot: Bot, event: Event, state: dict):
     try:
-        async with bot.config.sess.get("8.130.38.129:8000", param={"compose": True}) as resp:
+        async with bot.config.sess.get(
+            "8.130.38.129:8000", param={"compose": True}
+        ) as resp:
             if resp.status != 200:
                 raise Exception
             ShitJson = await resp.json()
@@ -206,6 +207,5 @@ async def compose_handle(bot: Bot, event: Event, state: dict):
             break
         except:
             retry += 1
-            continue
     if not success:
         await com.send("歌曲发送失败了。。。")
