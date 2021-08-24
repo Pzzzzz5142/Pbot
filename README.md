@@ -87,7 +87,7 @@
 
     详见[配置](##配置)一节。（yysy，没写完）
     
-#### 安装 RSSHub
+### 安装 RSSHub
 
 同样的，本 bot 所使用的诸如 rss 订阅等功能都是依赖于 RSSHub 完成的。由于docker实在是太方便了，因此本 bot 建议的安装方式为使用 docker 安装，其他安装方式详见[这里](https://docs.rsshub.app/install/#docker-jing-xiang)（需翻墙）。
 
