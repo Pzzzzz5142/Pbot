@@ -15,14 +15,13 @@ async def firsthandle(bot: Bot, event: Event, state: dict):
         2145919330,
         2167073315,
         3428325075,
+        1749919073,
     ]:
-        if event.detail_type == "group":
+        if event.group_id:
             r18 = not await cksafe(event.group_id)
             if event.group_id in [145029700, 1003259896]:
                 hour = datetime.today().hour
                 r18 = hour <= 7 or hour >= 22
-            if event.group_id == 1037557679:
-                r18 = True
         else:
             r18 = False
         x, err = await getSetuHigh(bot, r18)

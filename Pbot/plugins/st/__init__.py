@@ -1,7 +1,8 @@
 from loguru import logger
 from nonebot import on_command
 from nonebot.adapters.cqhttp import Bot, Event, unescape
-from .utils import searchPic, pixivicurl, auth, sauce, ascii2d
+from Pbot.utils import cksafe
+from .utils import searchPic, pixivicurl, auth, sauce, ascii2d, getSetuHigh
 import Pbot.cq as cq
 from nonebot.rule import regex
 import re
@@ -55,14 +56,21 @@ async def _(bot: Bot, event: Event, state: dict):
             res = await ascii2d(bot, state["pic"])
             await st.finish(res)
     else:
-        state["SanityLevel"] = 4
-        res, _id = await searchPic(bot, state["keyword"], state["SanityLevel"])
+        if event.group_id:
+            safe = await cksafe(event.group_id)
+        else:
+            safe = False
+        res, _id = await getSetuHigh(bot, not safe, state["keyword"])
+        if res == None:
+            res, _id = await searchPic(
+                bot,
+                state["keyword"],
+            )
+            if _id == -1:
+                await st.finish("暂时没有搜索到关于 {} 的结果哦~~".format(state["keyword"]))
         await st.send(
             (cq.reply(event.id) if event.detail_type != "private" else "") + res
         )
-        state["id"] = _id
-        if _id == -1:
-            await st.finish("暂时没有搜索到关于 {} 的结果哦~~".format(state["keyword"]))
 
 
 login = on_command("login")

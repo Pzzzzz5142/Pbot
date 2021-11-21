@@ -45,6 +45,8 @@ headers = {
     "Referer": "https://pixivic.com/",
 }
 
+pixivicurl = "https://api.pixivic.com/"
+
 
 async def init():
     config = nonebot.get_driver().config
@@ -61,7 +63,7 @@ def imageProxy(url: str, prox: str = "pximg.pixiv-viewer.workers.dev") -> str:
 
 
 def imageProxy_cat(url):
-    return url.replace("i.pximg.net", "i.pixiv.cat")
+    return url.replace("i.pximg.net", "i.pixiv.re")
 
 
 async def getImage(session: ClientSession, url: str, dir: str = "", **kwargs):
@@ -148,15 +150,21 @@ overCall = {}
 
 
 async def getSetuHigh(
-    bot: Bot, r18: bool, keyword: str = "", is_save: bool = True
+    bot: Bot, r18: bool, keyword: str = "", is_save: bool = True, rand=True
 ) -> str:
     random.seed(datetime.datetime.now())
-    LoliUrl = r"https://api.lolicon.app/setu/"
-    parm = {"apikey": None, "r18": "1", "size1200": "true", "num": 2}
+    LoliUrl = r"https://api.lolicon.app/setu/v1"
+    parm = {
+        "apikey": None,
+        "r18": "1",
+        "size1200": "true",
+        "num": 2,
+        "proxy": "i.pixiv.re",
+    }
     if keyword != "":
         parm["keyword"] = keyword
     if r18:
-        parm["r18"] = 1
+        parm["r18"] = 2 if rand else 1
     else:
         parm["r18"] = 0
     OverCalled = True
@@ -210,6 +218,7 @@ async def getSetuHigh(
         """
         if len(ShitJson["data"]) == 0:
             return None, f"没有搜到关于 {keyword} 的涩图哦。。。"
+        r18 = ShitJson["data"][0]["r18"]
         if is_save:
             pic = await getImage(
                 bot.config.session,

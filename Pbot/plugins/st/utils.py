@@ -5,18 +5,9 @@ from Pbot.utils import *
 import Pbot.cq as cq
 from bs4 import BeautifulSoup
 
-pixivicurl = "https://api.pixivic.com/"
-
 sauceUrl = r"https://saucenao.com/search.php"
 
 ascii2dUrl = "https://ascii2d.net/"
-
-headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.79 Safari/537.36",
-    "Authorization": "",
-    "Referer": "https://pixivic.com/",
-}
-
 
 async def searchPic(bot: Bot, key_word: str, maxSanityLevel: int = 4):
     datas = {

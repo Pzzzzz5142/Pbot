@@ -1,7 +1,9 @@
 from nonebot import on_command
 from nonebot.adapters.cqhttp import Bot, Event
 from Pbot.utils import getPixivDetail, getImage
+from Pbot.utils import headers, pixivicurl
 import Pbot.cq as cq
+import os
 
 cat = on_command("cat", priority=1)
 
@@ -41,7 +43,8 @@ async def firsthandle(bot: Bot, event: Event, state: dict):
 
 
 async def catPixiv(bot: Bot, _id: int, p=None, **kwargs):
-    data = {"p": _id}
+    data = {"illustId": _id}
+    """
     async with bot.config.session.post(
         "https://api.pixiv.cat/v1/generate", json=data
     ) as resp:
@@ -52,24 +55,37 @@ async def catPixiv(bot: Bot, _id: int, p=None, **kwargs):
             total = len(ShitJson["original_urls"]) if ShitJson["multiple"] else 1
         else:
             return [ShitJson["error"]]
+    """
+    if headers["Authorization"] == "" and os.path.exists(
+        os.path.join(os.path.dirname(__file__), "st", "a.txt")
+    ):
+        with open(os.path.join(os.path.dirname(__file__), "st", "a.txt"), "r") as fl:
+            headers["Authorization"] = fl.read()
+    async with bot.config.session.get(
+        pixivicurl + f"illusts/{_id}", headers=headers
+    ) as resp:
+        if resp.status != 200:
+            return ["网络错误：" + str(resp.status)]
+        ShitJson = await resp.json()
+        total = ShitJson["data"]["pageCount"]
     if p != None:
         if p == "*":
             if total > 1:
                 return ["这是一个有 {} 页的pid！".format(total)] + [
-                    "https://pixiv.cat/{}-{}.jpg".format(_id, i)
+                    "https://pixiv.re/{}-{}.jpg".format(_id, i)
                     for i in range(1, total + 1)
                 ]
             else:
-                return [cq.image("https://pixiv.cat/{}.jpg".format(_id))]
+                return [cq.image("https://pixiv.re/{}.jpg".format(_id))]
         elif p > 0 and p <= total:
             return [
-                "https://pixiv.cat/{}-{}.jpg".format(_id, p)
+                "https://pixiv.re/{}-{}.jpg".format(_id, p)
                 if total > 1
-                else "https://pixiv.cat/{}.jpg".format(_id)
+                else "https://pixiv.re/{}.jpg".format(_id)
             ]
         else:
             return ["页数不对哦~~ 这个 id 只有 {} 页".format(total)]
     if total > 1:
-        return ["这是一个有多页的pid！", "https://pixiv.cat/{}-1.jpg".format(_id)]
+        return ["这是一个有多页的pid！", "https://pixiv.re/{}-1.jpg".format(_id)]
     else:
-        return ["https://pixiv.cat/{}.jpg".format(_id)]
+        return ["https://pixiv.re/{}.jpg".format(_id)]
