@@ -9,10 +9,11 @@ sauceUrl = r"https://saucenao.com/search.php"
 
 ascii2dUrl = "https://ascii2d.net/"
 
+
 async def searchPic(bot: Bot, key_word: str, maxSanityLevel: int = 4):
     datas = {
         "keyword": key_word,
-        "pageSize": 15,
+        "pageSize": 6,
         "page": 1,
         "searchType": "original",
         "illustType": "illust",
@@ -34,8 +35,8 @@ async def searchPic(bot: Bot, key_word: str, maxSanityLevel: int = 4):
         ShitJson = await resp.json()
     _id = None
     res = f"暂时没有 {key_word} 的结果哦～"
-    Good = [ind for ind in range(0, len(ShitJson["data"]))]
     try:
+        Good = [ind for ind in range(0, len(ShitJson["data"]))]
         while len(Good) != 0:
             pic = random.choice(ShitJson["data"])
             res = await getImage(

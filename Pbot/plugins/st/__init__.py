@@ -7,7 +7,7 @@ import Pbot.cq as cq
 from nonebot.rule import regex
 import re
 
-st = on_command("st", rule=regex("^st"))
+st = on_command("st", rule=regex("^st(?: |$)"))
 
 
 @st.handle()
