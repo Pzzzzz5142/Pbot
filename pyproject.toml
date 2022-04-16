@@ -31,3 +31,7 @@ build-backend = "poetry.masonry.api"
 
 [tool.poetry.extras]
 db = ["gino"]
+
+[[tool.poetry.source]]
+name = "bfsu"
+url = "https://mirrors.bfsu.edu.cn/pypi/web/simple"
